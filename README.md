@@ -3,6 +3,20 @@
 
 Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
 
+## Possible Issues
+
+This migration is by no means complete, and the following problems could be encountered:
+
+* performance - this is a big problem for big repos, as every commit does heavy IO operations on disk, I'm looking on ways to improve it
+* relying on dependencies specified in Versions
+	* these days dependencies are specified in ConfigurationOf/BaselineOf, but old approach relied on some other way (which I don't even know how to use), I am ignoring this to improve perfomance, but I am not sure if it is safe
+* OSSubProcess/ProcessWrapper freezing/crashing
+	* this could potentially require restart of the whole migration, but it should be mostly fine
+* Merges are not converted to git merges
+	* This doesn't impact the functionality of the code, it just obscures the history somewhat
+		* On the other hand you cannot easily see this information in MCZ without writing your own visualization
+	* Maybe fixed in the future
+
 ## Usage
 
 ### Example
@@ -39,6 +53,18 @@ migration authors: {'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')}.
 "Run the migration, this might take a while"
 migration migrateToGitFileTreeRepositoryNamed: 'breaking-mcz/repository'
 ```
+
+## Git Tips
+
+Forgetting all changes in the history and going back to previous state. (Useful if the migration is botched and you want to rollback all changes.)
+
+```bash
+git reset --hard SHA
+``
+
+
+
+
 
 ## Extras
 
