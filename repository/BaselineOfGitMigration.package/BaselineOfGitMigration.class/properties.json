@@ -1,6 +1,6 @@
 {
 	"commentStamp" : "PeterUhnak 4/28/2017 15:34",
-	"super" : "Object",
+	"super" : "BaselineOf",
 	"category" : "BaselineOfGitMigration",
 	"classinstvars" : [ ],
 	"pools" : [ ],
