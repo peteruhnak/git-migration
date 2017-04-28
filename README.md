@@ -17,6 +17,15 @@ This migration is by no means complete, and the following problems could be enco
 		* On the other hand you cannot easily see this information in MCZ without writing your own visualization
 	* Maybe fixed in the future
 
+## Installation
+
+```st
+Metacello new
+	baseline: 'GitMigration';
+	repository: 'github://peteruhnak/git-migration/repository';
+	load.
+```
+
 ## Usage
 
 ### Example
@@ -174,14 +183,4 @@ Adding labels works the same way
 
 ```
 migration showProjectAncestryOn: aCollectionOfPackages withLabels: aBoolean
-```
-
-
-## Installation
-
-```st
-Metacello new
-	baseline: 'GitMigration';
-	repository: 'github://peteruhnak/git-migration/repository';
-	load.
 ```
