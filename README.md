@@ -60,11 +60,7 @@ Forgetting all changes in the history and going back to previous state. (Useful 
 
 ```bash
 git reset --hard SHA
-``
-
-
-
-
+```
 
 ## Extras
 
