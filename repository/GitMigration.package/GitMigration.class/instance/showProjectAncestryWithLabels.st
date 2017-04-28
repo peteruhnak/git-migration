@@ -1,0 +1,3 @@
+visualizations
+showProjectAncestryWithLabels
+	^ self showProjectAncestryWithLabels: true
