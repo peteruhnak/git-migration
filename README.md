@@ -50,7 +50,8 @@ migration allAuthors. "#('PeterUhnak')"
 "AuthorName (as shown in #allAuthors) -> #('Nicer Name' '<email.including-brackets@example.com>')"
 migration authors: {'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')}.
 
-"Run the migration, this might take a while"
+"Run the migration, this might take a while
+The target repository is found by string-matching so here the repo is in the folder 'breaking-mcz' and subfolder 'repository'"
 migration migrateToGitFileTreeRepositoryNamed: 'breaking-mcz/repository'
 ```
 
