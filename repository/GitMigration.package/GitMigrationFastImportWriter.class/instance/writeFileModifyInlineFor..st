@@ -9,7 +9,7 @@ writeFileModifyInlineFor: aFileReference
 		<< (aFileReference fullName trimLeft: [ :c | c = GitMigrationMemoryStore delimiter ]);
 		cr;
 		<< 'data ';
-		<< contents size;
+		<< rawContents size;
 		cr;
 		<< contents;
 		cr
