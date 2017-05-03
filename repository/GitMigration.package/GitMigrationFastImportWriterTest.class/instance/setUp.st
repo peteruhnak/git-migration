@@ -2,6 +2,7 @@ running
 setUp
 	super setUp.
 	self ensureTestRepoLoaded.
+	self ensureGitFileTreeLoaded.
 	self ensureAllCached.
 	stream := String new writeStream.
 	writer := GitMigrationFastImportWriter new on: stream.
