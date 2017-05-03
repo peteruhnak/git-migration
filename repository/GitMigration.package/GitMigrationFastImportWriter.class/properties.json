@@ -1,0 +1,20 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "GitMigration-FastImport",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"writeStream",
+		"marks",
+		"authorMapping",
+		"committerName",
+		"initialCommit",
+		"availableVersions",
+		"commitMarks",
+		"exportDirectory"
+	],
+	"name" : "GitMigrationFastImportWriter",
+	"type" : "normal"
+}

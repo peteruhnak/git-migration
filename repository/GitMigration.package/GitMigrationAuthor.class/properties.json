@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "GitMigration-FastImport",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"shortName",
+		"name",
+		"email"
+	],
+	"name" : "GitMigrationAuthor",
+	"type" : "normal"
+}

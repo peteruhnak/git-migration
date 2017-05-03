@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "",
+	"super" : "MemoryStore",
+	"category" : "GitMigration-FileSystem",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "GitMigrationMemoryStore",
+	"type" : "normal"
+}
