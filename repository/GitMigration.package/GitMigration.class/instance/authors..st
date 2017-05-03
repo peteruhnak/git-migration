@@ -6,7 +6,8 @@ authors: aCollection
 		do: [ :pair | 
 			(pair key isEmpty or: [ (pair value size = 2) not ])
 				ifTrue: [ self error: 'Invalid format' ].
-			allAuthors remove: pair key ].
+			(allAuthors includes: pair key)
+				ifTrue: [ allAuthors remove: pair key ] ].
 	allAuthors
 		ifNotEmpty: [ NotFound new
 				messageText:
