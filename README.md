@@ -6,11 +6,11 @@ Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
 This needlessly long readme explains three main parts:
 
 1. [Migration using git fast-import](#usage-fast-import)
-		* this should be the fastest option and safest option
+	* this should be the fastest and safest option
 2. [Migration using GitFileTree](#usage-gitfiletree)
-		* slower alternative, but also usable in principle
+	* slower alternative, but also usable for smaller repos
 3. [Visualizations](#visualizations)
-		* if you just want to see pretty pictures of your MCZ history before you decide (or not) to migrate
+	* if you just want to see pretty pictures of your MCZ history before you decide (or not) to migrate
 
 (also see [For Developers](#for-developers) if you want to dig in the internals)
 
