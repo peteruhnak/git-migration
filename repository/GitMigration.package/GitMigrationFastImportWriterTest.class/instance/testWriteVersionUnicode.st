@@ -1,9 +1,6 @@
 tests - writing
 testWriteVersionUnicode
-	| v1 v2 lines |
-"	self
-		skip:
-			'skipped because caches are flushed which tries to flush git memory repos, which are not real git repos (normally they would be GCed https://travis-ci.org/peteruhnak/git-migration/jobs/228516344#L493)'."
+	| v1 lines |
 	writer initialCommit: '1234567890'.
 	writer authorMapping
 		shortName: 'PeterUhnak'
