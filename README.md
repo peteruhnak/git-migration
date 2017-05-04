@@ -3,19 +3,48 @@
 
 Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
 
+This needlessly long readme explains three main parts:
+
+1. [Migration using git fast-import](#usage-fast-import)
+		* this should be the fastest option and safest option
+2. [Migration using GitFileTree](#usage-gitfiletree)
+		* slower alternative, but also usable in principle
+3. [Visualizations](#visualizations)
+		* if you just want to see pretty pictures of your MCZ history before you decide (or not) to migrate
+
+(also see [For Developers](#for-developers) if you want to dig in the internals)
+
+Table Of Contents
+
+* [Possible Issues](#possible-issues)
+* [Installation](#installation)
+* [Usage - Fast Import](#usage-fast-import)
+* [Usage - GitFileTree](#usage-gitfiletree)
+* [Extras](#extras)
+* [Visualizations](#visualizations)
+* [For Developers](#for-developers)
+
+
 ## Possible Issues
 
-This migration is by no means complete, and the following problems could be encountered:
+I am not an expert on Monticello (and I've migrated to git two years ago, so I don't know why I even wrote this tool), so it is possible that there are edge cases that I haven't considered; if you run into a problem, feel free to open an issue (ideally with a pull request ;)).
 
-* performance - this is a big problem for big repos, as every commit does heavy IO operations on disk, I'm looking on ways to improve it
+* performance - this was improved somewhat (from tens of minutes to minutes) with fast-import format, however processing a repository with ~800 commits can still take two or three minutes (generating the import file in Pharo is slow, the import itself will take seconds at most)
 * relying on dependencies specified in Versions
-	* these days dependencies are specified in ConfigurationOf/BaselineOf, but old approach relied on some other way (which I don't even know how to use), I am ignoring this to improve perfomance, but I am not sure if it is safe
+	* these days dependencies are specified in ConfigurationOf/BaselineOf, but old approach relied on some other way, I am ignoring these dependencies to further improve perfomance, but I am not sure if it is safe for all repos
+		* if you know how these works and you have a repository using them, then pull requests are welcome
 * OSSubProcess/ProcessWrapper freezing/crashing
-	* this could potentially require restart of the whole migration, but it should be mostly fine
-* Merges are not converted to git merges
-	* This doesn't impact the functionality of the code, it just obscures the history somewhat
-		* On the other hand you cannot easily see this information in MCZ without writing your own visualization
-	* Maybe fixed in the future
+	* I have bad experience with ProcessWrapper on Windows (that's why I made [shell proxy](https://github.com/peteruhnak/pharo-shell-proxy/) for myself), and I had reports of OSSubProcess freezing on Mac; PW/OSS failing will require for the migration to restart
+		* note that this problem affects only GitFileTree-based import; fast-import doesn't use them
+* GitFileTree import doesn't preserve merge information
+	* this doesn't impact the functionality of the code, only the metahistory is somewhat obscured
+			* fast-import doesn't suffer from this and it will convert MCZ merges as git merges
+
+## Prerequisites
+
+* git installed in the system and available in `PATH`
+* **Pharo 6+**
+	* it should work in Pharo 5 too, however there are some weird unicode-related issues that were breaking the build… if you _must_ use it on Pharo 5, then let me know
 
 ## Installation
 
@@ -26,7 +55,75 @@ Metacello new
 	load.
 ```
 
-## Usage
+## Usage - Fast Import
+
+Fast Import generates a file for [git-fast-import](https://git-scm.com/docs/git-fast-import) use.
+
+### Example
+
+```smalltalk
+migration := GitMigration on: 'peteruhnak/breaking-mcz'.
+migration authors: {'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')}.
+migration
+	fastImportCodeToDirectory: 'repository'
+	initialCommit: '5793e82'
+	to: 'D:/tmp/breaking-mcz2/import.txt'
+```
+
+### 1. Adding Repositories
+
+Add your source repository (SmalltalkHub) to Pharo, e.g. via Monticello Browser
+
+### 2. Find The Initial Commit SHA
+
+The migration will need to know from which commit it should start. This will be typically the SHA of the current commit of the master branch; you don't need the full 40-char SHA, first e.g. 10 characters is enough.
+
+The get the current commit, you can do the following
+
+```bash
+$ git log --oneline -n 1
+```
+
+### 3. Generating Import File
+
+```smalltalk
+"Specify the name of the source repository; I am sourcing from peteruhnak/breaking-mcz project on SmalltalkHub"
+migration := GitMigration on: 'peteruhnak/breaking-mcz'.
+
+"List all authors anywhere in the project's commits"
+migration allAuthors. "#('PeterUhnak')"
+
+"You must specify name and email for _every_ author"
+"You must also specify the name/email for yourself (Author fullName), even if you didn't commit in the source repository"
+"AuthorName (as shown in #allAuthors) -> #('Nicer Name' '<email.including-brackets@example.com>')"
+migration authors: {
+	'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')
+}.
+
+"Run the migration, this might take a while
+* the code directory is where the code will be stored (common practice is to have the code in `repository` subfolder)
+* initialCommit is the commit from which the migration should start
+* to is where the git-fast-import file should be stored"
+migration
+	fastImportCodeToDirectory: 'repository'
+	initialCommit: '5793e82'
+	to: 'D:/tmp/breaking-mcz2/import.txt'
+```
+
+### 4. Running The Import
+
+Now get a terminal go to the target git repository, and run the migration.
+
+```bash
+# import.txt is the file that you've created earlier
+$ git fast-import < import.txt
+# fast-import doesn't change the working directory, so we need to update it
+$ git reset --hard master
+```
+
+Now you should see the changes, and `git log` should show you the entire history.
+
+## Usage - GitFileTree
 
 ### Example
 
@@ -35,11 +132,6 @@ migration := GitMigration on: 'peteruhnak/breaking-mcz'.
 migration authors: {'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')}.
 migration migrateToGitFileTreeRepositoryNamed: 'breaking-mcz/repository'
 ```
-
-### Prerequsites:
-
-* git installed in the system
-* installed and working GitFileTree (available in catalog)
 
 ### 1. Adding Repositories
 
@@ -69,7 +161,7 @@ migration migrateToGitFileTreeRepositoryNamed: 'breaking-mcz/repository'
 Forgetting all changes in the history and going back to previous state. (Useful if the migration is botched and you want to rollback all changes.)
 
 ```bash
-git reset --hard SHA
+$ git reset --hard SHA
 ```
 
 ## Extras
@@ -184,3 +276,16 @@ Adding labels works the same way
 ```
 migration showProjectAncestryOn: aCollectionOfPackages withLabels: aBoolean
 ```
+
+## For Developers
+
+Some hints and random thoughts.
+SmalltalkHub stores every commit in a separate MCZ file, which contains some metadata about the commit (name, ancestry, etc), as well as all the code. The code itself is not incremental, rather code in each zip is as-is.
+
+This means that when GitFileTree is exporting, it will remove all files on the disk, unpack the MCZ file, and write all the code back to disk, and commit. Git is smart to only commit what has actually changed, however for GFT this operation is very IO intense - if you 5k files in your code base and you changed just a method (which is common), then 5k files will be removed and then added back... you can imagine what this does to disk when performed 1000x times (once for each commit).
+
+With fast-import I've made a workaround for this. A pseudo-repository `GitMigrationMemoryTreeGitRepository` is created that uses memory file system as the target directory. This way during the fileout no files have to be written on disk as everything is kept in memory, which improves the performance significantly.
+
+Note however that instead of using `MemoryStore` I had to subclass it (`GitMigrationMemoryStore`) to properly handle path separators; on Windows, MemoryStore by itself will create files and directories with slashes (both forward and backward) in their names instead of creating a hierarchy, so my `GitMigrationMemoryStore` fixes this.
+
+I am also subclassing `MemoryHandle` (`GitMigrationMemoryHandle`) and I've changed the `writeStream` of it, to return `MultiByteBinaryOrTextStream`. This is because `MemoryStore` returns only an ordinary `WriteStream` which cannot handle unicode content and 那不是很好。 :)
