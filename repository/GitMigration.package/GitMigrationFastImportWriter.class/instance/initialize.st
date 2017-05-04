@@ -5,5 +5,5 @@ initialize
 	authorMapping := GitMigrationAuthorMapping new.
 	commitMarks := OrderedDictionary new.
 	committerName := Author fullName.
-	availableVersions := #().
+	availableVersions := Dictionary new.
 	exportDirectory := '/'

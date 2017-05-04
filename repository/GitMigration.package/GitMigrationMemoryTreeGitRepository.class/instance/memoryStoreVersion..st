@@ -1,4 +1,4 @@
-*GitMigration
+storing
 memoryStoreVersion: aVersion
 	"Do a filetree store followed by a git add command."
 

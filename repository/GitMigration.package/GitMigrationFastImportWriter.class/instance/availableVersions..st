@@ -1,3 +1,3 @@
 accessing
-availableVersions: anObject
-	availableVersions := anObject
+availableVersions: aCollection
+	availableVersions := (aCollection collect: [ :each | each -> true ]) asDictionary

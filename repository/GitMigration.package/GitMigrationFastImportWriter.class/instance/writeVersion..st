@@ -5,7 +5,7 @@ writeVersion: aVersion
 	self writeAncestorsFor: aVersion info.
 	(memoryFileOut := (FileSystem store: GitMigrationMemoryStore new) root / exportDirectory)
 		ensureCreateDirectory.
-	repository := MCFileTreeGitRepository new.
+	repository := GitMigrationMemoryTreeGitRepository new.
 	repository directory: memoryFileOut.
 	repository memoryStoreVersion: aVersion.
 	self writeDirectoryTreeInlineFor: memoryFileOut
