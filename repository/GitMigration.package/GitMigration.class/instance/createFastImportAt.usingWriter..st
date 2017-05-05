@@ -8,7 +8,12 @@ createFastImportAt: anInitialCommitish usingWriter: aWriter
 				shortName: key
 				name: duet first
 				email: ((duet second withoutPrefix: '<') withoutSuffix: '>') ].
-	self cacheAllVersions.
+	'Caching all versions...'
+		displayProgressFrom: 0
+		to: 1
+		during: [ :bar | 
+			bar value: 0.
+			self cacheAllVersions ].
 	totalOrdering := self commitOrder.
 	versions := totalOrdering
 		collect: [ :each | 

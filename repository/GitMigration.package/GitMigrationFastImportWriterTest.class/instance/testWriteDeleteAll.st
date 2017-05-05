@@ -4,5 +4,5 @@ testWriteDeleteAll
 	self
 		assert: stream contents
 		equals:
-			'filedeleteall
+			'deleteall
 '

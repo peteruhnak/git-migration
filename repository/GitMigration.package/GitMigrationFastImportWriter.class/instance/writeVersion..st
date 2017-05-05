@@ -8,4 +8,5 @@ writeVersion: aVersion
 	repository := GitMigrationMemoryTreeGitRepository new.
 	repository directory: memoryFileOut.
 	repository memoryStoreVersion: aVersion.
+	self writeDeleteAll.
 	self writeDirectoryTreeInlineFor: memoryFileOut

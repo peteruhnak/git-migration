@@ -1,5 +1,5 @@
 writing
 writeDeleteAll
 	writeStream
-		<< 'filedeleteall';
+		<< 'deleteall';
 		cr

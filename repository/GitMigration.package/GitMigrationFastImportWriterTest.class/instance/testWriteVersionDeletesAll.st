@@ -1,5 +1,5 @@
 tests - writing
-testWriteVersion
+testWriteVersionDeletesAll
 	| v1 v2 |
 	writer initialCommit: '1234567890'.
 	writer authorMapping
@@ -15,7 +15,4 @@ testWriteVersion
 	writer availableVersions: (Array with: v1 info with: v2 info).
 	writer commitMarkFor: v1 info.
 	writer writeVersion: v2.
-	self
-		assert: ((stream contents lines first: 8) copyWithoutIndex: 4)
-		equals:
-			#('commit refs/heads/master' 'mark :2' 'author Peter Uhnak <i.uhnak@gmail.com> 1493283388 +0000' 'data 5' 'qwrqw' 'merge :1' 'deleteall')
+	self assert: (stream contents lines includes: 'deleteall')
