@@ -5,9 +5,9 @@ Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
 
 This needlessly long readme explains three main parts:
 
-1. [Migration using git fast-import](#usage-fast-import)
+1. [Migration using git fast-import](#usage---fast-import)
 	* this should be the fastest and safest option
-2. [Migration using GitFileTree](#usage-gitfiletree)
+2. [Migration using GitFileTree](#usage---gitfiletree)
 	* slower alternative, but also usable for smaller repos
 3. [Visualizations](#visualizations)
 	* if you just want to see pretty pictures of your MCZ history before you decide (or not) to migrate
@@ -18,8 +18,8 @@ Table Of Contents
 
 * [Possible Issues](#possible-issues)
 * [Installation](#installation)
-* [Usage - Fast Import](#usage-fast-import)
-* [Usage - GitFileTree](#usage-gitfiletree)
+* [Usage - Fast Import](#usage---fast-import)
+* [Usage - GitFileTree](#usage---gitfiletree)
 * [Extras](#extras)
 * [Visualizations](#visualizations)
 * [For Developers](#for-developers)
@@ -29,7 +29,7 @@ Table Of Contents
 
 I am not an expert on Monticello (and I've migrated to git two years ago, so I don't know why I even wrote this tool), so it is possible that there are edge cases that I haven't considered; if you run into a problem, feel free to open an issue (ideally with a pull request ;)).
 
-* performance - this was improved somewhat (from tens of minutes to minutes) with fast-import format, however processing a repository with ~800 commits can still take two or three minutes (generating the import file in Pharo is slow, the import itself will take seconds at most)
+* performance - this was improved somewhat (from tens of minutes to minutes) with fast-import format, however processing a larger repository can still take two or three minutes (PolyMath with 784 commits across 74 packages took ~3 minutes to generate 87MB import file; the git-fast-import itself took less than a second)
 * relying on dependencies specified in Versions
 	* these days dependencies are specified in ConfigurationOf/BaselineOf, but old approach relied on some other way, I am ignoring these dependencies to further improve perfomance, but I am not sure if it is safe for all repos
 		* if you know how these works and you have a repository using them, then pull requests are welcome
@@ -38,7 +38,7 @@ I am not an expert on Monticello (and I've migrated to git two years ago, so I d
 		* note that this problem affects only GitFileTree-based import; fast-import doesn't use them
 * GitFileTree import doesn't preserve merge information
 	* this doesn't impact the functionality of the code, only the metahistory is somewhat obscured
-			* fast-import doesn't suffer from this and it will convert MCZ merges as git merges
+		* fast-import doesn't suffer from this and it will convert MCZ merges as git merges
 
 ## Prerequisites
 
@@ -48,7 +48,7 @@ I am not an expert on Monticello (and I've migrated to git two years ago, so I d
 
 ## Installation
 
-```st
+```smalltalk
 Metacello new
 	baseline: 'GitMigration';
 	repository: 'github://peteruhnak/git-migration/repository';
@@ -57,7 +57,7 @@ Metacello new
 
 ## Usage - Fast Import
 
-Fast Import generates a file for [git-fast-import](https://git-scm.com/docs/git-fast-import) use.
+Fast Import generates a file for [git-fast-import](https://git-scm.com/docs/git-fast-import).
 
 ### Example
 
@@ -112,7 +112,7 @@ migration
 
 ### 4. Running The Import
 
-Now get a terminal go to the target git repository, and run the migration.
+Now get a terminal, go to the target git repository, and run the migration.
 
 ```bash
 # import.txt is the file that you've created earlier
@@ -166,7 +166,7 @@ $ git reset --hard SHA
 
 ## Extras
 
-If you want to play around with the data before commiting, read the following.
+If you want to play around with the data before committing, read the following.
 
 ```smalltalk
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
@@ -200,19 +200,19 @@ allVersions := migration completeAncestryOfPackageNamed: 'Somewhere'.
 ```
 
 The versions in mcz are random, so we need to sort them in an order in which we can commit them to git. This means that all ancestry is honored (no child is commited before its parent), and "sibling" commits are sorted by date.
-Note that we cannot just sort the commits by date, because the date might not follow the ancestry correctly (which can happen, so I cannot rely on it)
+Note that we cannot just sort the commits by date, because the date might not follow the ancestry correctly (which can happen, especially if different timezones are involved, which MC doesn't keep track of)
 ```smalltalk
 sorted := migration topologicallySort: allVersions.
 ```
 
 Get the total ordering of all commits across all packages
 ```smalltalk
-sorted := migration topologicallySort: allVersions.
+allVersionsOrdered := migration commitOrder.
 ```
 
 ## Visualizations
 
-This requires Roassal to be installed (available in catalog)
+This requires [Roassal](http://agilevisualization.com/) to be installed (available in catalog).
 
 In all visualizations hovering over an item will show a popup with more information, and clicking on item will open an inspector.
 Keep in mind that running the command will not open a new window, so you have to either inspect it, or do-it-and-go in playground.
@@ -233,7 +233,7 @@ migration showAncestryTopologyOnPackageNamed: 'Somewhere'.
 * Blue - tail/head versions (versions with no children, typically the latest version(s))
 * Purple - "virtual" versions that do not have a corresponding commit (this happens as mentioned earlier)
 
-The number on the third line indicates in what order the packages will be commited (purple packages are listed, but are not commited, because there is no code to commit)
+The number on the third line indicates in what order the packages will be commited (purple packages are listed, but are not commited, because there is no code to commit).
 Keep in mind that the number in the commit (Somewhere-PeterUhnak.15) has no value, and can be easily changed (and broken by hand); `breaking-mcz` project was intentionally constructed to have the numbers semi-random to demonstrate this.
 
 
@@ -282,10 +282,10 @@ migration showProjectAncestryOn: aCollectionOfPackages withLabels: aBoolean
 Some hints and random thoughts.
 SmalltalkHub stores every commit in a separate MCZ file, which contains some metadata about the commit (name, ancestry, etc), as well as all the code. The code itself is not incremental, rather code in each zip is as-is.
 
-This means that when GitFileTree is exporting, it will remove all files on the disk, unpack the MCZ file, and write all the code back to disk, and commit. Git is smart to only commit what has actually changed, however for GFT this operation is very IO intense - if you 5k files in your code base and you changed just a method (which is common), then 5k files will be removed and then added back... you can imagine what this does to disk when performed 1000x times (once for each commit).
+This means that when GitFileTree is exporting, it will remove all files on the disk, unpack the MCZ file, and write all the code back to disk, and commit. Git is smart enough to only commit what has actually changed, however for GFT this operation is very IO intense - if you have 5k files in your code base and you changed just a single method (which is common), then 5k files will be removed and then added back... you can imagine what this does to the disk when performed 1000x times (once for each commit).
 
-With fast-import I've made a workaround for this. A pseudo-repository `GitMigrationMemoryTreeGitRepository` is created that uses memory file system as the target directory. This way during the fileout no files have to be written on disk as everything is kept in memory, which improves the performance significantly.
+With fast-import I've made a workaround for this. A pseudo-repository `GitMigrationMemoryTreeGitRepository` is created that uses memory file system as the target directory. This way the fileout doesn't write to real disk and everything is kept in RAM, which improves the performance significantly.
 
 Note however that instead of using `MemoryStore` I had to subclass it (`GitMigrationMemoryStore`) to properly handle path separators; on Windows, MemoryStore by itself will create files and directories with slashes (both forward and backward) in their names instead of creating a hierarchy, so my `GitMigrationMemoryStore` fixes this.
 
-I am also subclassing `MemoryHandle` (`GitMigrationMemoryHandle`) and I've changed the `writeStream` of it, to return `MultiByteBinaryOrTextStream`. This is because `MemoryStore` returns only an ordinary `WriteStream` which cannot handle unicode content and 那不是很好。 :)
+I am also subclassing `MemoryHandle` (`GitMigrationMemoryHandle`) and I've changed the `writeStream` of it to return `MultiByteBinaryOrTextStream`. This is because `MemoryStore` returns only an ordinary `WriteStream` which cannot handle unicode content and 那不是很好。 :)
