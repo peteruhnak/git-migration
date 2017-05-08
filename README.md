@@ -6,7 +6,7 @@ Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
 **WARNING**
 > This project is still experimental, so use it at your own risk. Although it is not going to break your (SmalltalkHub) project, it is possible that an error will be discovered and you will have to redo the migration
 >
-> resetting issues ~~#2~~, #4
+> resetting issues ~~[#2](https://github.com/peteruhnak/git-migration/issues/2)~~, [#4](https://github.com/peteruhnak/git-migration/issues/4)
 
 
 This needlessly long readme explains three main parts:
