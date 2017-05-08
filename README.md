@@ -3,7 +3,7 @@
 
 Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
 
-> **Warning:**
+**WARNING**
 > This project is still experimental, so use it at your own risk. Although it is not going to break your (SmalltalkHub) project, it is possible that an error will be discovered and you will have to redo the migration
 >
 > resetting issues ~~#2~~, #4
