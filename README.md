@@ -3,6 +3,15 @@
 
 Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
 
+# Until [#4](https://github.com/peteruhnak/git-migration/issues/4) is resolved it is not advised to used this tool, as the commit merges are not properly resolved.</p>
+
+
+**WARNING**
+> This project is still experimental, so use it at your own risk. Although it is not going to break your (SmalltalkHub) project, it is possible that an error will be discovered and you will have to redo the migration
+>
+> resetting issues ~~[#2](https://github.com/peteruhnak/git-migration/issues/2)~~, [#4](https://github.com/peteruhnak/git-migration/issues/4)
+
+
 This needlessly long readme explains three main parts:
 
 1. [Migration using git fast-import](#usage---fast-import)
