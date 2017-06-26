@@ -1,0 +1,1 @@
+I am a MemoryStore that correctly handles path delimiters across platforms.

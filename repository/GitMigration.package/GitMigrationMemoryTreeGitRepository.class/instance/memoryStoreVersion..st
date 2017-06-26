@@ -1,10 +1,6 @@
 storing
 memoryStoreVersion: aVersion
-	"Do a filetree store followed by a git add command."
-
-	"Do not commit yet. Commit will only happens after checking the dependencies."
-
-	"Writer is metadata dependent."
+	"Dump the mcz contents into a memory filetree without performing any commits."
 
 	| packageDirectoryString |
 	MCFileTreeGitWriter fileOut: aVersion on: self.

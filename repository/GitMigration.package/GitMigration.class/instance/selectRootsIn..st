@@ -1,3 +1,0 @@
-topology sorting
-selectRootsIn: aCollectionOfPairs
-	

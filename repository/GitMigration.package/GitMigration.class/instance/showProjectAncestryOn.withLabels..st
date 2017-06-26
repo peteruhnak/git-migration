@@ -27,9 +27,10 @@ showProjectAncestryOn: aCollectionOfPackages withLabels: aBoolean
 						color: Color veryLightGray;
 						size: 20 ].
 			b shape
-				if: [ :each | (versions includes: each) not ] fillColor: Color purple;
-				if: [ :each | realRoots includes: each ] fillColor: Color blue;
-				if: [ :each | realTails includes: each ] fillColor: Color red.
+				fillColor: Color white;
+				if: [ :each | (versions includes: each) not ] fillColor: Color magenta;
+				if: [ :each | realRoots includes: each ] fillColor: Color cyan;
+				if: [ :each | realTails includes: each ] fillColor: Color yellow.
 			b nodes: sorted.
 			b edges shape arrowedLine withShorterDistanceAttachPointWithJump.
 			"	head: RTEmptyNarrowArrow asHead;"

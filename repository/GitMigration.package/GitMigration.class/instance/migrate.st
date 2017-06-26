@@ -1,3 +1,0 @@
-actions
-migrate
-	self cacheAllVersions.
