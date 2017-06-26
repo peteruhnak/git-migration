@@ -11,27 +11,16 @@ Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
 >
 > resetting issues ~~[#2](https://github.com/peteruhnak/git-migration/issues/2)~~, [#4](https://github.com/peteruhnak/git-migration/issues/4)
 
-
-This needlessly long readme explains three main parts:
-
-1. [Migration using git fast-import](#usage---fast-import)
-	* this should be the fastest and safest option
-2. [Migration using GitFileTree](#usage---gitfiletree)
-	* slower alternative, but also usable for smaller repos
-3. [Visualizations](#visualizations)
-	* if you just want to see pretty pictures of your MCZ history before you decide (or not) to migrate
-
-(also see [For Developers](#for-developers) if you want to dig in the internals)
-
 Table Of Contents
 
 * [Possible Issues](#possible-issues)
 * [Installation](#installation)
 * [Usage - Fast Import](#usage---fast-import)
-* [Usage - GitFileTree](#usage---gitfiletree)
 * [Extras](#extras)
 * [Visualizations](#visualizations)
+	* see pretty pictures of your MCZ history before you decide to migrate
 * [For Developers](#for-developers)
+	* digging in the internals
 
 
 ## Possible Issues
@@ -42,18 +31,12 @@ I am not an expert on Monticello (and I've migrated to git two years ago, so I d
 * relying on dependencies specified in Versions
 	* these days dependencies are specified in ConfigurationOf/BaselineOf, but old approach relied on some other way, I am ignoring these dependencies to further improve perfomance, but I am not sure if it is safe for all repos
 		* if you know how these works and you have a repository using them, then pull requests are welcome
-* OSSubProcess/ProcessWrapper freezing/crashing
-	* I have bad experience with ProcessWrapper on Windows (that's why I made [shell proxy](https://github.com/peteruhnak/pharo-shell-proxy/) for myself), and I had reports of OSSubProcess freezing on Mac; PW/OSS failing will require for the migration to restart
-		* note that this problem affects only GitFileTree-based import; fast-import doesn't use them
-* GitFileTree import doesn't preserve merge information
-	* this doesn't impact the functionality of the code, only the metahistory is somewhat obscured
-		* fast-import doesn't suffer from this and it will convert MCZ merges as git merges
 
 ## Prerequisites
 
 * git installed in the system and available in `PATH`
 * **Pharo 6+**
-	* it should work in Pharo 5 too, however there are some weird unicode-related issues that were breaking the build… if you _must_ use it on Pharo 5, then let me know
+	* it could probably work in Pharo 5, however there were some weird unicode-related issues that were breaking the build… let me know if you _must_ use it in Pharo 5
 
 ## Installation
 
@@ -131,39 +114,6 @@ $ git reset --hard master
 ```
 
 Now you should see the changes, and `git log` should show you the entire history.
-
-## Usage - GitFileTree
-
-### Example
-
-```smalltalk
-migration := GitMigration on: 'peteruhnak/breaking-mcz'.
-migration authors: {'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')}.
-migration migrateToGitFileTreeRepositoryNamed: 'breaking-mcz/repository'
-```
-
-### 1. Adding Repositories
-
-Add your source repository (SmalltalkHub) and your target repository (local gitfiletree://) to Pharo, e.g. via Monticello Browser
-
-### 2. Running Migration
-
-
-```smalltalk
-"Specify the name of the source repository; I am sourcing from peteruhnak/breaking-mcz project on SmalltalkHub"
-migration := GitMigration on: 'peteruhnak/breaking-mcz'.
-
-"List all authors anywhere in the project's commits"
-migration allAuthors. "#('PeterUhnak')"
-
-"You must specify name and email for _every_ author"
-"AuthorName (as shown in #allAuthors) -> #('Nicer Name' '<email.including-brackets@example.com>')"
-migration authors: {'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')}.
-
-"Run the migration, this might take a while
-The target repository is found by string-matching so here the repo is in the folder 'breaking-mcz' and subfolder 'repository'"
-migration migrateToGitFileTreeRepositoryNamed: 'breaking-mcz/repository'
-```
 
 ## Git Tips
 
