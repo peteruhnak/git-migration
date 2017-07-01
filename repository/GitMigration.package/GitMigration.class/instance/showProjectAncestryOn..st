@@ -1,3 +1,0 @@
-visualizations
-showProjectAncestryOn: aCollectionOfPackages
-	^ self showProjectAncestryOn: aCollectionOfPackages withLabels: false

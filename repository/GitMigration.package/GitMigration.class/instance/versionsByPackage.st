@@ -1,6 +1,6 @@
 accessing
 versionsByPackage
-"	versionsByPackage ifNotNil: [ ^ versionsByPackage ]."
+	| versionsByPackage |
 	versionsByPackage := Dictionary new.
 	repository versionsWithPackageNames
 		do: [ :quad | 

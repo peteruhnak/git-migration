@@ -1,0 +1,3 @@
+accessing
+committerEmail
+	^ committer email

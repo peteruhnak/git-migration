@@ -1,4 +1,4 @@
-fast import
+import
 fastImportCodeToDirectory: aDirectoryName initialCommit: anInitialCommitish to: aFileReference
 	| stream writer |
 	stream := WriteStream on: ''.

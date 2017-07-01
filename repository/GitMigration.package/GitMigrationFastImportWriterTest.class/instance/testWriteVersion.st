@@ -13,9 +13,10 @@ testWriteVersion
 		versionReaderForFileNamed: 'Somewhere-PeterUhnak.2.mcz'
 		do: [ :v | v2 := v ].
 	writer availableVersions: (Array with: v1 info with: v2 info).
-	writer commitMarkFor: v1 info.
+	writer writeVersion: v1.
+	stream reset.
 	writer writeVersion: v2.
 	self
-		assert: ((stream contents lines first: 8) copyWithoutIndex: 4)
+		assert: ((stream contents lines first: 7) copyWithoutIndex: 4)
 		equals:
-			#('commit refs/heads/master' 'mark :2' 'author Peter Uhnak <i.uhnak@gmail.com> 1493283388 +0000' 'data 5' 'qwrqw' 'merge :1' 'deleteall')
+			#('commit refs/heads/master' 'mark :2' 'author Peter Uhnak <i.uhnak@gmail.com> 1493283388 +0000' 'data 5' 'qwrqw' 'deleteall')

@@ -1,3 +1,0 @@
-accessing
-availableVersions
-	^ availableVersions

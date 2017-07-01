@@ -1,3 +1,0 @@
-visualizations
-showProjectAncestry
-	^ self showProjectAncestryWithLabels: false

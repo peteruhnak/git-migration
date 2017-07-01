@@ -1,8 +1,8 @@
 writing
 writeVersion: aVersion
-	| repository memoryFileOut |
-	self writeCommitPreambleFor: aVersion info.
-	self writeAncestorsFor: aVersion info.
+	| repository memoryFileOut commitInfo|
+	commitInfo := self commitInfoFor: aVersion info.
+	self writeCommitPreambleFor: commitInfo.
 	(memoryFileOut := (FileSystem store: GitMigrationMemoryStore new) root / exportDirectory)
 		ensureCreateDirectory.
 	repository := GitMigrationMemoryTreeGitRepository new.

@@ -1,4 +1,4 @@
-visualizations
+accessing
 packagesWithMultipleRoots
 	| multiRoots |
 	multiRoots := Dictionary new.

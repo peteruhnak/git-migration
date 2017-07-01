@@ -1,4 +1,4 @@
-fast import
+import
 createFastImportAt: anInitialCommitish usingWriter: aWriter
 	| totalOrdering versions |
 	aWriter initialCommit: anInitialCommitish.

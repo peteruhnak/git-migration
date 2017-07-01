@@ -1,7 +1,7 @@
 tests - writing
 testWriteCommitPreamble
 	| contents dtNow |
-	writer writeCommitPreambleFor: self versionWithoutParent.
+	writer writeCommitPreambleFor: (writer commitInfoFor: self versionWithoutParent).
 	contents := stream contents.
 	"hack to extract the DateAndTime now inside, which is not straightforward to test"
 	dtNow := (contents lines fourth splitOn: '> ') last.

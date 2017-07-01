@@ -6,11 +6,9 @@
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [
-		"stream",
-		"writer",
 		"authorMapping",
 		"committer"
 	],
-	"name" : "GitMigrationFastImportWriterTest",
+	"name" : "GitMigrationCommitInfoTest",
 	"type" : "normal"
 }

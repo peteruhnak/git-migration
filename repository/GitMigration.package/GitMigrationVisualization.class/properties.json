@@ -1,16 +1,13 @@
 {
-	"commentStamp" : "PeterUhnak 6/26/2017 08:19",
+	"commentStamp" : "PeterUhnak 7/1/2017 09:53",
 	"super" : "Object",
 	"category" : "GitMigration",
 	"classinstvars" : [ ],
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [
-		"authors",
-		"repository",
-		"cachedVersions",
-		"completeAncestryCache"
+		"migration"
 	],
-	"name" : "GitMigration",
+	"name" : "GitMigrationVisualization",
 	"type" : "normal"
 }

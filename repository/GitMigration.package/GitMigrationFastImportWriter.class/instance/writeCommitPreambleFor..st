@@ -1,5 +1,5 @@
 writing
-writeCommitPreambleFor: aVersionInfo
+writeCommitPreambleFor: aCommitInfo
 	writeStream
 		nextPutAll:
 			('commit refs/heads/master
@@ -8,11 +8,11 @@ author {authorName} <{authorEmail}> {authoredDate}
 committer {committerName} <{committerEmail}> {committedDate}
 {commitMessageData}'
 				format:
-					{#commitMark -> (self commitMarkFor: aVersionInfo).
-					#authorName -> (self authorNameFor: aVersionInfo).
-					#authorEmail -> (self authorEmailFor: aVersionInfo).
-					#authoredDate -> (self authoredDateFor: aVersionInfo).
-					#committerName -> (self committerNameFor: aVersionInfo).
-					#committerEmail -> (self committerEmailFor: aVersionInfo).
-					#committedDate -> (self committedDateFor: aVersionInfo).
-					#commitMessageData -> (self inlineDataFor: aVersionInfo message)} asDictionary)
+					{#commitMark -> (self commitMarkFor: aCommitInfo info).
+					#authorName -> aCommitInfo authorName.
+					#authorEmail -> aCommitInfo authorEmail.
+					#authoredDate -> aCommitInfo authoredDate.
+					#committerName -> aCommitInfo committerName.
+					#committerEmail -> aCommitInfo committerEmail.
+					#committedDate -> aCommitInfo committedDate.
+					#commitMessageData -> aCommitInfo commitMessageData} asDictionary)
