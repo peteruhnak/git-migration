@@ -3,13 +3,14 @@
 
 Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
 
-# Until [#4](https://github.com/peteruhnak/git-migration/issues/4) is resolved it is not advised to used this tool, as the commit merges are not properly resolved.</p>
-
-
 **WARNING**
-> This project is still experimental, so use it at your own risk. Although it is not going to break your (SmalltalkHub) project, it is possible that an error will be discovered and you will have to redo the migration
->
-> resetting issues ~~[#2](https://github.com/peteruhnak/git-migration/issues/2)~~, [#4](https://github.com/peteruhnak/git-migration/issues/4)
+> This project is experimental, so use it at your own risk. Although it is not going to break your (SmalltalkHub) project, it is possible that an error will be discovered and you will have to redo the migration.
+
+
+**NOTE**
+> Please read [#4](https://github.com/peteruhnak/git-migration/issues/4) if you are interested in preserving mcz merges to git merges 1:1  is resolved it is not advised to used this tool, as the commit merges are not properly resolved.
+
+
 
 Table Of Contents
 
@@ -29,7 +30,7 @@ I am not an expert on Monticello (and I've migrated to git two years ago, so I d
 
 * performance - Git's fast-import is used to move the data. On Pharo side (generating import file) it will take couple minutes for large repos (caching every single version, unzipping, transforming, ...). On Git side it will take about a second. (PolyMath with 800 commits accross 70 packages took ~3 minutes generating 90MB import file)
 * relying on dependencies specified in MC Versions (=NOT ConfigurationOf/BaselineOf) -- not supported
-* preserving proper merge history
+* preserving proper merge history (see  also [#4](https://github.com/peteruhnak/git-migration/issues/4))
 	* after many hours I've concluded that there is no way to do a fully automated 1:1 migration; if you need to convert all MCZ commits to Git commits, you would have to guide it by hand
 
 ## Prerequisites
