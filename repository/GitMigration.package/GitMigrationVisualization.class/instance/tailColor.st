@@ -1,0 +1,3 @@
+colors
+tailColor
+	^ Color cyan

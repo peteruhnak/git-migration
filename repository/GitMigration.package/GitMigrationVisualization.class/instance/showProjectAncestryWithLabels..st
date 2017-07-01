@@ -1,3 +1,3 @@
 visualizations - wrappers
 showProjectAncestryWithLabels: aBoolean
-	^ self showProjectAncestryOn: self versionsByPackage keys withLabels: aBoolean
+	^ self showProjectAncestryOn: migration versionsByPackage keys withLabels: aBoolean

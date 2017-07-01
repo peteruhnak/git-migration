@@ -13,9 +13,9 @@ showAncestryTopologyOnPackageNamed: aPackageName inView: aView
 			each name , String cr , each timeStamp printString , String cr
 				, (sorted indexOf: each) printString ];
 		fillColor: Color white;
-		if: [ :each | (versions includes: each) not ] fillColor: Color magenta;
-		if: [ :each | realRoots includes: each ] fillColor: Color cyan;
-		if: [ :each | realTails includes: each ] fillColor: Color yellow.
+		if: [ :each | (versions includes: each) not ] fillColor: self missingColor;
+		if: [ :each | realRoots includes: each ] fillColor: self tailColor;
+		if: [ :each | realTails includes: each ] fillColor: self rootColor.
 	b nodes: sorted.
 	b edges shape arrowedLine head: RTEmptyNarrowArrow asHead.
 	b edges connectFromAll: #ancestors.

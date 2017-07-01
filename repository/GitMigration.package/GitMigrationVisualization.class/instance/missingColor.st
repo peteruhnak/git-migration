@@ -1,0 +1,3 @@
+colors
+missingColor
+	^ Color magenta
