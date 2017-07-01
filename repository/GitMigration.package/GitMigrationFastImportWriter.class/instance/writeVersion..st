@@ -1,8 +1,10 @@
 writing
 writeVersion: aVersion
-	| repository memoryFileOut commitInfo|
+	| repository memoryFileOut commitInfo |
 	commitInfo := self commitInfoFor: aVersion info.
 	self writeCommitPreambleFor: commitInfo.
+	(self commitMarkFor: commitInfo info) = 1
+		ifTrue: [ writeStream << ('from ' , initialCommit, String cr) ].
 	(memoryFileOut := (FileSystem store: GitMigrationMemoryStore new) root / exportDirectory)
 		ensureCreateDirectory.
 	repository := GitMigrationMemoryTreeGitRepository new.
