@@ -25,18 +25,17 @@ Table Of Contents
 
 ## Possible Issues
 
-I am not an expert on Monticello (and I've migrated to git two years ago, so I don't know why I even wrote this tool), so it is possible that there are edge cases that I haven't considered; if you run into a problem, feel free to open an issue (ideally with a pull request ;)).
+I am not an expert on Monticello (and I've migrated to git two years ago, so I don't know why I even wrote this tool), so it is possible that there are edge cases that I haven't considered. If you run into a problem, please open an issue (ideally with a pull request).
 
-* performance - this was improved somewhat (from tens of minutes to minutes) with fast-import format, however processing a larger repository can still take two or three minutes (PolyMath with 784 commits across 74 packages took ~3 minutes to generate 87MB import file; the git-fast-import itself took less than a second)
-* relying on dependencies specified in Versions
-	* these days dependencies are specified in ConfigurationOf/BaselineOf, but old approach relied on some other way, I am ignoring these dependencies to further improve perfomance, but I am not sure if it is safe for all repos
-		* if you know how these works and you have a repository using them, then pull requests are welcome
+* performance - Git's fast-import is used to move the data. On Pharo side (generating import file) it will take couple minutes for large repos (caching every single version, unzipping, transforming, ...). On Git side it will take about a second. (PolyMath with 800 commits accross 70 packages took ~3 minutes generating 90MB import file)
+* relying on dependencies specified in MC Versions (=NOT ConfigurationOf/BaselineOf) -- not supported
+* preserving proper merge history
+	* after many hours I've concluded that there is no way to do a fully automated 1:1 migration; if you need to convert all MCZ commits to Git commits, you would have to guide it by hand
 
 ## Prerequisites
 
 * git installed in the system and available in `PATH`
 * **Pharo 6+**
-	* it could probably work in Pharo 5, however there were some weird unicode-related issues that were breaking the build… let me know if you _must_ use it in Pharo 5
 
 ## Installation
 
@@ -54,7 +53,9 @@ Fast Import generates a file for [git-fast-import](https://git-scm.com/docs/git-
 ### Example
 
 ```smalltalk
+"Pharo"
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
+migration cacheAllVersions.
 migration authors: {'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')}.
 migration
 	fastImportCodeToDirectory: 'repository'
@@ -62,13 +63,20 @@ migration
 	to: 'D:/tmp/breaking-mcz2/import.txt'
 ```
 
-### 1. Adding Repositories
+```bash
+# Terminal
+cd D:/tmp/breaking-mcz2
+git fast-import < import.txt
+git reset --hard master
+```
+
+### 1. Add Source Repository
 
 Add your source repository (SmalltalkHub) to Pharo, e.g. via Monticello Browser
 
 ### 2. Find The Initial Commit SHA
 
-The migration will need to know from which commit it should start. This will be typically the SHA of the current commit of the master branch; you don't need the full 40-char SHA, first e.g. 10 characters is enough.
+The migration will need to know from which commit it should start. This will be typically the SHA of the current commit of the master branch; you don't need the full 40-char SHA, an unambiguous prefix is enough.
 
 The get the current commit, you can do the following
 
@@ -78,22 +86,28 @@ $ git log --oneline -n 1
 
 ### 3. Generating Import File
 
+*A longer description of the example above.*
+
 ```smalltalk
 "Specify the name of the source repository; I am sourcing from peteruhnak/breaking-mcz project on SmalltalkHub"
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
+
+"Download all mcz files, this will take a while"
+migration cacheAllVersions.
 
 "List all authors anywhere in the project's commits"
 migration allAuthors. "#('PeterUhnak')"
 
 "You must specify name and email for _every_ author"
-"You must also specify the name/email for yourself (Author fullName), even if you didn't commit in the source repository"
-"AuthorName (as shown in #allAuthors) -> #('Nicer Name' '<email.including-brackets@example.com>')"
+"You must also specify the name/email for yourself (Author fullName), even if you haven't authored any code -- git treats separately the author of a commit and the commiter of a commit"
+
+"AuthorName (as shown in #allAuthors) -> #('Nicer Name' '<email@example.com>')"
 migration authors: {
 	'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')
 }.
 
 "Run the migration, this might take a while
-* the code directory is where the code will be stored (common practice is to have the code in `repository` subfolder)
+* the code directory is where the code will be stored (common practice is to have the code in `repository` subfolder, just like this project)
 * initialCommit is the commit from which the migration should start
 * to is where the git-fast-import file should be stored"
 migration
@@ -104,7 +118,7 @@ migration
 
 ### 4. Running The Import
 
-Now get a terminal, go to the target git repository, and run the migration.
+Get a terminal, go to the target git repository, and run the migration.
 
 ```bash
 # import.txt is the file that you've created earlier
@@ -113,11 +127,11 @@ $ git fast-import < import.txt
 $ git reset --hard master
 ```
 
-Now you should see the changes, and `git log` should show you the entire history.
+You should see the changes, and `git log` should show you the entire history.
 
 ## Git Tips
 
-Forgetting all changes in the history and going back to previous state. (Useful if the migration is botched and you want to rollback all changes.)
+Forgetting all changes in the history and going back to previous state. Useful if the migration is botched and you want to rollback all changes.
 
 ```bash
 $ git reset --hard SHA
@@ -125,13 +139,14 @@ $ git reset --hard SHA
 
 ## Extras
 
-If you want to play around with the data before committing, read the following.
+If you want to play around with the version data before committing, read the following.
 
 ```smalltalk
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
 ```
 
-Downloading all MCZs from server; this needs to happen only once and can take a while for large repos.
+Downloading all MCZs from server; this needs to happen only once and can take couple of minutes for large repos.
+
 ```smalltalk
 migration cacheAllVersions.
 ```
@@ -178,23 +193,27 @@ Keep in mind that running the command will not open a new window, so you have to
 
 ### Single Package Ancestry
 
-Looking at raw data is not very insightful, so couple visualization are included:
+Looking at raw data is not very insightful, so couple visualization are included.
+
+```smalltalk
+migration := GitMigration on: 'peteruhnak/breaking-mcz'.
+migration cacheAllVersions.
+visualization := migration visualization.
+```
 
 Show the complete ancestry of a single package.
 ```smalltalk
-migration := GitMigration on: 'peteruhnak/breaking-mcz'.
-migration showAncestryTopologyOnPackageNamed: 'Somewhere'.
+visualization showAncestryTopologyOnPackageNamed: 'Somewhere'.
 ```
 
 ![](figures/package-ancestry.png)
 
-* Red - root versions (versions with no parents, typically only a single initial commit)
-* Blue - tail/head versions (versions with no children, typically the latest version(s))
-* Purple - "virtual" versions that do not have a corresponding commit (this happens as mentioned earlier)
+* Yellow - root versions (versions with no parents, typically only a single initial commit)
+* Cyan - tail/head versions (versions with no children, typically the latest version(s))
+* Magenta - "virtual" versions that do not have a corresponding commit (this happens as mentioned earlier)
 
-The number on the third line indicates in what order the packages will be commited (purple packages are listed, but are not commited, because there is no code to commit).
-Keep in mind that the number in the commit (Somewhere-PeterUhnak.15) has no value, and can be easily changed (and broken by hand); `breaking-mcz` project was intentionally constructed to have the numbers semi-random to demonstrate this.
-
+The number on the third line indicates in what order the packages will be committed (magenta packages are listed, but are not committed, because there is no code to commit).
+Keep in mind that the number in the commit (Somewhere-PeterUhnak.15) has no meaning, and can be easily changed (and broken by hand) when committing.
 
 
 ### Project Ancestry
@@ -202,7 +221,7 @@ Keep in mind that the number in the commit (Somewhere-PeterUhnak.15) has no valu
 To see all packages and history, you could do.
 
 ```smalltalk
-migration showProjectAncestry.
+visualization showProjectAncestry.
 ```
 
 ![](figures/project-ancestry.png)
@@ -210,9 +229,9 @@ migration showProjectAncestry.
 This is useful if you want to quickly glance at a project (and is also much faster to generate and use), but if want you can also add label
 
 ```smalltalk
-migration showProjectAncestryWithLabels.
+visualization showProjectAncestryWithLabels.
 "or"
-migration showProjectAncestryWithLabels: true.
+visualization showProjectAncestryWithLabels: true.
 ```
 
 ![](figures/project-ancestry-labels.png)
@@ -224,8 +243,10 @@ If you have big project and want to look only at certain packages, you can do so
 
 ```
 migration := GitMigration on: 'PolyMath/PolyMath'.
+migration cacheAllVersions.
+visualization := migration visualization.
 "or just a collection of package names"
-migration showProjectAncestryOn: (allPackages copyWithoutAll: #('Monticello' 'ConfigurationOfSciSmalltalk'  'Math-RealInterval')).
+visualization showProjectAncestryOn: (allPackages copyWithoutAll: #('Monticello' 'ConfigurationOfSciSmalltalk'  'Math-RealInterval')).
 ```
 
 ![](figures/subset-packages-ancestry.png)
@@ -233,7 +254,7 @@ migration showProjectAncestryOn: (allPackages copyWithoutAll: #('Monticello' 'Co
 Adding labels works the same way
 
 ```
-migration showProjectAncestryOn: aCollectionOfPackages withLabels: aBoolean
+visualization showProjectAncestryOn: aCollectionOfPackages withLabels: aBoolean
 ```
 
 ## For Developers
