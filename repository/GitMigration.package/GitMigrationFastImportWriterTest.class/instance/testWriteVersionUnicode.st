@@ -14,15 +14,15 @@ testWriteVersionUnicode
 	lines := stream contents lines.
 	self
 		assert:
-			{lines at: 23.
-			lines at: 24.
-			lines at: 25}
+			{lines at: 24.
+			lines at: 25.
+			lines at: 26}
 		equals: #('M 100644 inline CoSomewhere.package/CoSomething.class/README.md' 'data 6' '你好').
 	self
 		assert:
-			{lines at: 43.
-			lines at: 44.
-			lines at: 46.
-			lines at: 47}
+			{lines at: 44.
+			lines at: 45.
+			lines at: 47.
+			lines at: 48}
 		equals:
 			#('M 100644 inline CoSomewhere.package/CoSomething.class/instance/unicode.st' 'data 39' 'unicode' '	^ ''彼得''')
