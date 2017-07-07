@@ -1,6 +1,7 @@
 tests - writing
-testWriteVersion
+testWriteVersionDeletePackage
 	| v1 v2 |
+	writer exportDirectory: 'repository'.
 	writer initialCommit: '1234567890'.
 	writer authorMapping
 		shortName: 'PeterUhnak'
@@ -16,7 +17,4 @@ testWriteVersion
 	writer writeVersion: v1.
 	stream reset.
 	writer writeVersion: v2.
-	self
-		assert: ((stream contents lines first: 7) copyWithoutIndex: 4)
-		equals:
-			#('commit refs/heads/master' 'mark :2' 'author Peter Uhnak <i.uhnak@gmail.com> 1493283388 +0000' 'data 5' 'qwrqw' 'D Somewhere.package')
+	self assert: (stream contents lines includes: 'D repository/Somewhere.package')

@@ -1,5 +1,5 @@
 tests - writing
-testWriteVersionDeletesAll
+testWriteVersionDeletePackageTrimmed
 	| v1 v2 |
 	writer initialCommit: '1234567890'.
 	writer authorMapping
@@ -16,4 +16,4 @@ testWriteVersionDeletesAll
 	writer writeVersion: v1.
 	stream reset.
 	writer writeVersion: v2.
-	self assert: (stream contents lines includes: 'deleteall')
+	self assert: stream contents lines seventh equals: 'D Somewhere.package'

@@ -21,7 +21,7 @@ showProjectAncestryOn: aCollectionOfPackages withLabels: hasLabels
 			hasLabels
 				ifTrue: [ b shape text
 						text: [ :each | 
-							each name , String cr , each timeStamp truncated printString , String cr , each message
+							each name , String cr , each timeStamp truncated printString , String cr , (each message truncateTo: 20)
 								, ' (' , each versionNumber asString , ')' , String cr
 								, (sorted indexOf: each) printString ] ]
 				ifFalse: [ b shape box
