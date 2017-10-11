@@ -1,6 +1,6 @@
 {
 	"commentStamp" : "PeterUhnak 6/26/2017 08:15",
-	"super" : "MCFileTreeGitRepository",
+	"super" : "MCFileTreeRepository",
 	"category" : "GitMigration-FileSystem",
 	"classinstvars" : [ ],
 	"pools" : [ ],

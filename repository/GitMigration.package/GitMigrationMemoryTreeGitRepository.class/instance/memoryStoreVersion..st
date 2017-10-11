@@ -3,7 +3,7 @@ memoryStoreVersion: aVersion
 	"Dump the mcz contents into a memory filetree without performing any commits."
 
 	| packageDirectoryString |
-	MCFileTreeGitWriter fileOut: aVersion on: self.
+	IceMetadatalessFileTreeWriter fileOut: aVersion on: self.
 	packageDirectoryString := (self class parseName: aVersion info name) first
 		, self packageExtension.
 	aVersion dependencies notEmpty
