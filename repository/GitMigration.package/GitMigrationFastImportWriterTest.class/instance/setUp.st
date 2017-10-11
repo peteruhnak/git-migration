@@ -2,7 +2,7 @@ running
 setUp
 	super setUp.
 	self ensureTestRepoLoaded.
-	self ensureGitFileTreeLoaded.
+"	self ensureGitFileTreeLoaded."
 	self ensureAllCached.
 	stream := String new writeStream.
 	authorMapping := GitMigrationAuthorMapping new
