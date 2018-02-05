@@ -2,6 +2,6 @@ baselines
 baseline: spec
 	<baseline>
 	spec
-		for: #'pharo6.x'
+		for: #common
 		do: [ spec package: 'GitMigration'.
 			spec group: 'default' with: #('GitMigration') ]
