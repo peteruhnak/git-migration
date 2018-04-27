@@ -5,5 +5,5 @@ versionsByPackage
 	repository versionsWithPackageNames
 		do: [ :quad | 
 			(versionsByPackage at: quad first ifAbsentPut: [ OrderedCollection new ])
-				add: (self cachedVersions at: (quad last withoutSuffix: '.mcz')) ].
+				add: (self cachedVersionNamed: (quad last withoutSuffix: '.mcz')) ].
 	^ versionsByPackage

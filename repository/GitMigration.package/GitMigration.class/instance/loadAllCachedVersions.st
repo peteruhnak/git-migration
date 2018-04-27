@@ -1,9 +1,12 @@
 retrieving
 loadAllCachedVersions
-	| allDirectVersions allFiles |
+	| allDirectVersions allFiles dictionary |
 	allDirectVersions := OrderedCollection new.
 	allFiles := repository versionsWithPackageNames collect: #last.
 	allFiles
 		do: [ :each | allDirectVersions add: (self versionInfoFromFileNamed: each) ]
 		displayingProgress: 'Extracting MCZ Metadata'.
-	^ (allDirectVersions collect: [ :each | each name -> each ]) asDictionary
+	"Don't use #asDictionary in case some commits have duplicate name. Instead, override them."
+	dictionary := Dictionary new.
+	allDirectVersions do: [ :each | dictionary at: each name put: each ].
+	^ dictionary
