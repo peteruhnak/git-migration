@@ -69,6 +69,7 @@ migration
 cd D:/tmp/breaking-mcz2
 git fast-import < import.txt
 git reset --hard master
+git gc
 ```
 
 ### 1. Add Source Repository
@@ -126,6 +127,9 @@ Get a terminal, go to the target git repository, and run the migration.
 $ git fast-import < import.txt
 # fast-import doesn't change the working directory, so we need to update it
 $ git reset --hard master
+# (optional) garbage collection: fast import leaves a lot of mess behind
+# happens automatically on commit since Git >=2.17
+$ git gc
 ```
 
 You should see the changes, and `git log` should show you the entire history.
