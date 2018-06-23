@@ -40,11 +40,23 @@ I am not an expert on Monticello (and I've migrated to git two years ago, so I d
 
 ## Installation
 
+**Pharo 6**
+
+```smalltalk
+Metacello new
+	baseline: 'GitMigration';
+	repository: 'github://peteruhnak/git-migration:pharo6/repository';
+	load
+```
+
+
+**Pharo 7**
+
 ```smalltalk
 Metacello new
 	baseline: 'GitMigration';
 	repository: 'github://peteruhnak/git-migration/repository';
-	load.
+	load
 ```
 
 ## Usage - Fast Import
