@@ -6,4 +6,5 @@ initialize
 	commitMarks := OrderedDictionary new.
 	committerName := Author fullName.
 	availableVersions := Dictionary new.
-	exportDirectory := '/'
+	exportDirectory := '/'.
+	fileWriter := GitFastImportFileWriter new.
