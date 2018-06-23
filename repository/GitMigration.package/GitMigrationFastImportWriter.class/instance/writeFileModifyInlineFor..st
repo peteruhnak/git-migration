@@ -6,7 +6,7 @@ writeFileModifyInlineFor: aFileReference
 	contents := reader reset contents.
 	writeStream
 		<< 'M 100644 inline ';
-		<< (aFileReference fullName trimLeft: [ :c | c = GitMigrationMemoryStore delimiter ]);
+		<< (aFileReference fullName trimLeft: [ :c | c = GitFastImportMemoryStore delimiter ]);
 		cr;
 		<< 'data ';
 		<< rawContents size;

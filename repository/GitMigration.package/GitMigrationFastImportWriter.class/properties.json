@@ -13,7 +13,8 @@
 		"initialCommit",
 		"availableVersions",
 		"commitMarks",
-		"exportDirectory"
+		"exportDirectory",
+		"fileWriter"
 	],
 	"name" : "GitMigrationFastImportWriter",
 	"type" : "normal"
