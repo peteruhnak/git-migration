@@ -1,9 +1,5 @@
 writing
 writeDeletePackageFor: aVersion
 	| path |
-	path := exportDirectory , GitFastImportMemoryStore delimiter asString
-		, aVersion package name , '.package'.
-	writeStream
-		<< 'D ';
-		<< (path trimLeft: [ :c | c = GitFastImportMemoryStore delimiter ]);
-		cr
+	path := FileSystem unicodeMemory root / exportDirectory / aVersion package name , 'package'.
+	fastWriter writeDeleteReference: path

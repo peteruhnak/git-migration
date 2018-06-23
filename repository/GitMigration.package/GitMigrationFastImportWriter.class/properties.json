@@ -6,15 +6,12 @@
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [
-		"writeStream",
-		"marks",
 		"authorMapping",
 		"committerName",
 		"initialCommit",
 		"availableVersions",
-		"commitMarks",
 		"exportDirectory",
-		"fileWriter"
+		"fastWriter"
 	],
 	"name" : "GitMigrationFastImportWriter",
 	"type" : "normal"

@@ -4,5 +4,5 @@ testCommittedDate
 
 	self
 		assert:
-			((self commitInfoFor: self versionWithoutParent) committedDate allButLast: 6)
-				asNumber - DateAndTime now rounded asUnixTime < 2
+			(self commitInfoFor: self versionWithoutParent) committedDate asUnixTime
+				- DateAndTime now rounded asUnixTime < 2

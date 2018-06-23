@@ -1,3 +1,3 @@
 initialization
 on: aStream
-	writeStream := aStream
+	fastWriter on: aStream.

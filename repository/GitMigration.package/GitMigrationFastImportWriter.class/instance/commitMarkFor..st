@@ -1,3 +1,3 @@
 accessing
 commitMarkFor: aVersionInfo
-	^ commitMarks at: aVersionInfo ifAbsentPut: [ commitMarks size + 1 ]
+	^ fastWriter commitMarkFor: aVersionInfo

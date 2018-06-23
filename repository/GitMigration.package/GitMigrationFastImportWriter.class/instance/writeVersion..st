@@ -2,13 +2,13 @@ writing
 writeVersion: aVersion
 	| repository memoryFileOut commitInfo |
 	commitInfo := self commitInfoFor: aVersion info.
-	self writeCommitPreambleFor: commitInfo.
-	(self commitMarkFor: commitInfo info) = 1
-		ifTrue: [ writeStream << ('from ' , initialCommit, String cr) ].
+	fastWriter writeCommitPreambleFor: commitInfo.
+	(self commitMarkFor: commitInfo) = 1
+		ifTrue: [ fastWriter writeLine: 'from ' , initialCommit ].
 	(memoryFileOut := (FileSystem store: GitFastImportMemoryStore new) root / exportDirectory)
 		ensureCreateDirectory.
 	repository := GitMigrationMemoryTreeGitRepository new.
 	repository directory: memoryFileOut.
 	repository memoryStoreVersion: aVersion.
 	self writeDeletePackageFor: aVersion.
-	self writeDirectoryTreeInlineFor: memoryFileOut
+	fastWriter writeDirectoryTreeInlineFor: memoryFileOut
