@@ -5,8 +5,8 @@ fastImportCodeToDirectory: aDirectoryName initialCommit: anInitialCommitish to: 
 		ensureDelete;
 		writeStreamDo: [ :rawStream | 
 			| stream |
-			stream := (ZnNewLineWriterStream on: rawStream) forLf.
-			writer := GitMigrationFastImportWriter new on: stream.
+			"stream := (ZnNewLineWriterStream on: rawStream) forLf."
+			writer := GitMigrationTonelWriter new on: rawStream.
 			writer exportDirectory: aDirectoryName.
 			self createFastImportAt: anInitialCommitish usingWriter: writer ].
 	^ writer commitMarks

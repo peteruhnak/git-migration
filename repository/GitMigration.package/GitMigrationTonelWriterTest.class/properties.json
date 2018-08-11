@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "",
+	"super" : "GitMigrationFastImportWriterTest",
+	"category" : "GitMigration-Tests",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "GitMigrationTonelWriterTest",
+	"type" : "normal"
+}

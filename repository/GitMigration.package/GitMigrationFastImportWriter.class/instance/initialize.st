@@ -5,4 +5,4 @@ initialize
 	committerName := Author fullName.
 	availableVersions := Dictionary new.
 	exportDirectory := '/'.
-	fastWriter := GitFastImportFileWriter new.
+	fastWriter := GitFastImportFileWriter new
