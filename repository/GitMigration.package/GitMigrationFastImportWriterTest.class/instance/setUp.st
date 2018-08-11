@@ -1,6 +1,7 @@
 running
 setUp
 	super setUp.
+	self timeLimit: 1 minute.
 	self ensureTestRepoLoaded.
 	"	self ensureGitFileTreeLoaded."
 	self ensureAllCached.
