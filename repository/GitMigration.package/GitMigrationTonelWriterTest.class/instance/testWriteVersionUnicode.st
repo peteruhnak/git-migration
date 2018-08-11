@@ -12,12 +12,13 @@ testWriteVersionUnicode
 	writer availableVersions: (Array with: v1 info).
 	writer writeVersion: v1.
 	lines := stream contents lines.
-	firstLine := lines indexOf: (lines detect: [ :each | each includesSubstring: 'CoSomething.class.st' ]).
+	firstLine := lines
+		indexOf: (lines detect: [ :each | each includesSubstring: 'CoSomething.class.st' ]).
 	self
-		assert: (lines copyFrom: firstLine to: firstLine + 4)
-		equals: #('M 100644 inline CoSomewhere/CoSomething.class.st' 'data 256' '"' '你好' '"').
-	firstLine := lines indexOf: (lines detect: [ :each | each includesSubstring: 'CoSomething >> unicode [' ]).
+		assert: ((lines copyFrom: firstLine to: firstLine + 4) copyWithoutIndex: 2)
+		equals: #('M 100644 inline CoSomewhere/CoSomething.class.st' '"' '你好' '"').
+	firstLine := lines
+		indexOf: (lines detect: [ :each | each includesSubstring: 'CoSomething >> unicode [' ]).
 	self
 		assert: (lines copyFrom: firstLine to: firstLine + 2)
-		equals:
-			#('CoSomething >> unicode [' '	^ ''彼得''' ']')
+		equals: #('CoSomething >> unicode [' '	^ ''彼得''' ']')
