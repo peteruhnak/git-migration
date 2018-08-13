@@ -1,15 +1,23 @@
 # MCZ -> Git Migration
 [![Build Status](https://travis-ci.org/peteruhnak/git-migration.svg?branch=master)](https://travis-ci.org/peteruhnak/git-migration) [![Coverage Status](https://coveralls.io/repos/github/peteruhnak/git-migration/badge.svg?branch=master)](https://coveralls.io/github/peteruhnak/git-migration?branch=master)
 
-Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git
+Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git.
 
-**WARNING**
-> This tool has been successfully used by several people, but remains experimental. It is your responsibility to verify that the result is what you expected.
+The output is in **Tonel** format.
 
 
-**NOTE**
-> Please read [#4](https://github.com/peteruhnak/git-migration/issues/4) if you are interested in preserving mcz merges to git merges 1:1  is resolved it is not advised to used this tool, as the commit merges are not properly resolved.
+## Installation
 
+**Pharo 7**
+
+```smalltalk
+Metacello new
+	baseline: 'GitMigration';
+	repository: 'github://peteruhnak/git-migration/repository';
+	load
+```
+
+For Pharo 6, see further down.
 
 
 Table Of Contents
@@ -26,36 +34,30 @@ Table Of Contents
 
 ## Possible Issues
 
-I am not an expert on Monticello (and I've migrated to git two years ago, so I don't know why I even wrote this tool), so it is possible that there are edge cases that I haven't considered. If you run into a problem, please open an issue (ideally with a pull request).
+This tool has been used in countless successful migrations, however it is possible that you will run into a very special™ edge case. Feel free to open an issue or contact me directly on Pharo's mailing list or Discord.
 
 * performance - Git's fast-import is used to move the data. On Pharo side (generating import file) it will take couple minutes for large repos (caching every single version, unzipping, transforming, ...). On Git side it will take about a second. (PolyMath with 800 commits accross 70 packages took ~3 minutes generating 90MB import file)
 * relying on dependencies specified in MC Versions (=NOT ConfigurationOf/BaselineOf) -- not supported
 * preserving proper merge history (see  also [#4](https://github.com/peteruhnak/git-migration/issues/4))
-	* after many hours I've concluded that there is no way to do a fully automated 1:1 migration; if you need to convert all MCZ commits to Git commits, you would have to guide it by hand
+	* after many hours burned on this I've concluded that there is no way to do a fully automated 1:1 migration; note that your data/commits are not lost, only the merge history will not be as rich.
 
 ## Prerequisites
 
 * git installed in the system and available in `PATH`
 * **Pharo 6+**
 
-## Installation
+## Installation - Pharo 6
 
 **Pharo 6**
+
+**NOTE** Please note that new features are _not_ backported to Pharo 6 branch. GitMigration doesn't actually load your target project into the image, so there should be no practical reason to migrate in P6 instead of P7.
+
+**NOTE 2** Pharo 6 version will output FileTree format; for Tonel please use Pharo 7.
 
 ```smalltalk
 Metacello new
 	baseline: 'GitMigration';
 	repository: 'github://peteruhnak/git-migration:pharo6/repository';
-	load
-```
-
-
-**Pharo 7**
-
-```smalltalk
-Metacello new
-	baseline: 'GitMigration';
-	repository: 'github://peteruhnak/git-migration/repository';
 	load
 ```
 
