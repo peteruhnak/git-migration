@@ -24,7 +24,7 @@ Table Of Contents
 
 * [Possible Issues](#possible-issues)
 * [Installation](#installation)
-* [Usage - Fast Import](#usage---fast-import)
+* [Usage](#usage)
 * [Extras](#extras)
 * [Visualizations](#visualizations)
 	* see pretty pictures of your MCZ history before you decide to migrate
@@ -61,9 +61,9 @@ Metacello new
 	load
 ```
 
-## Usage - Fast Import
+## Usage
 
-Fast Import generates a file for [git-fast-import](https://git-scm.com/docs/git-fast-import).
+This tool generates a file for [git-fast-import](https://git-scm.com/docs/git-fast-import).
 
 ### Example
 
