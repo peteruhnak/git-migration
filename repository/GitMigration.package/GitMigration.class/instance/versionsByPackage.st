@@ -2,8 +2,9 @@ accessing
 versionsByPackage
 	| versionsByPackage |
 	versionsByPackage := Dictionary new.
-	repository versionsWithPackageNames
-		do: [ :quad | 
-			(versionsByPackage at: quad first ifAbsentPut: [ OrderedCollection new ])
-				add: (self cachedVersionNamed: (quad last withoutSuffix: '.mcz')) ].
+	self versionsInfo
+		do: [ :version | 
+			(versionsByPackage
+				at: (version name copyUpToLast: $-)
+				ifAbsentPut: [ OrderedCollection new ]) add: version ].
 	^ versionsByPackage

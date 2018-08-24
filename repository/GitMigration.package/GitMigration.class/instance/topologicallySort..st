@@ -4,5 +4,6 @@ topologicallySort: anAncestry
 	anAncestry size = 1
 		ifTrue: [ ^ anAncestry asOrderedCollection ].
 	ancestry := anAncestry asArray
-		flatCollect: [ :each | each ancestors collect: [ :anc | anc -> each ] ].
+		flatCollect: [ :each | 
+			each ancestors collect: [ :anc | anc -> each ] ].
 	^ self topologicallySortPairs: ancestry

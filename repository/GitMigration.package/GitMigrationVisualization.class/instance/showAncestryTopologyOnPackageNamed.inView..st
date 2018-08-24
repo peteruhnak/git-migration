@@ -12,7 +12,7 @@ showAncestryTopologyOnPackageNamed: aPackageName inView: aView
 		text: [ :each | 
 			each name , String cr , each timeStamp printString , String cr
 				, (sorted indexOf: each) printString ];
-		fillColor: Color white;
+		fillColor: Color black;
 		if: [ :each | (versions includes: each) not ] fillColor: self missingColor;
 		if: [ :each | realRoots includes: each ] fillColor: self tailColor;
 		if: [ :each | realTails includes: each ] fillColor: self rootColor.

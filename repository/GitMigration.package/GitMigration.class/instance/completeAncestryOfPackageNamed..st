@@ -1,9 +1,9 @@
 accessing
 completeAncestryOfPackageNamed: aPackageName
-	| versions allVersions getAncestors parents |
 	^ completeAncestryCache
 		at: aPackageName
-		ifAbsentPut: [ "Not all versions are actually available directly, so do a very deep search"
+		ifAbsentPut: [ | versions allVersions getAncestors parents |
+			"Not all versions are actually available directly, so do a very deep search"
 			versions := self versionsByPackage at: aPackageName.
 			allVersions := Set new.
 			getAncestors := [ :parent | 

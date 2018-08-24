@@ -28,7 +28,7 @@ showProjectAncestryOn: aCollectionOfPackages withLabels: hasLabels
 						color: Color veryLightGray;
 						size: 20 ].
 			b shape
-				fillColor: Color white;
+				fillColor: Color black;
 				if: [ :each | (versions includes: each) not ] fillColor: self missingColor;
 				if: [ :each | realRoots includes: each ] fillColor: self tailColor;
 				if: [ :each | realTails includes: each ] fillColor: self rootColor.
@@ -36,6 +36,7 @@ showProjectAncestryOn: aCollectionOfPackages withLabels: hasLabels
 			b edges shape arrowedLine withShorterDistanceAttachPointWithJump.
 			"	head: RTEmptyNarrowArrow asHead;"
 			b edges connectFromAll: #ancestors.
-			b layout sugiyama horizontalGap: 30 ].
+			b layout dominanceTree horizontalGap: 30
+			"b layout sugiyama horizontalGap: 30 "].
 	b view @ RTZoomableView.
 	^ b

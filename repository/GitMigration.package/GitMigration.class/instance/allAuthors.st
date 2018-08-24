@@ -1,3 +1,3 @@
 accessing
 allAuthors
-	^ (self cachedVersions values collect: #author) asSet asArray sorted
+	^ (self versionsWithPackageNames collect: #second) asSet asArray sorted
