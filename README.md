@@ -67,10 +67,14 @@ This tool generates a file for [git-fast-import](https://git-scm.com/docs/git-fa
 
 ### Example
 
+See further for detailed explanation.
+
 ```smalltalk
 "Pharo"
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
-migration cacheAllVersions.
+migration downloadAllVersions.
+migration populateCaches.
+migration allAuthors.
 migration authors: {'PeterUhnak' -> #('Peter Uhnak' '<i.uhnak@gmail.com>')}.
 migration
 	fastImportCodeToDirectory: 'repository'
@@ -109,7 +113,10 @@ $ git log --oneline -n 1
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
 
 "Download all mcz files, this will take a while"
-migration cacheAllVersions.
+migration downloadAllVersions.
+
+"Preload version metadata into the image."
+migration populateCaches.
 
 "List all authors anywhere in the project's commits"
 migration allAuthors. "#('PeterUhnak')"
