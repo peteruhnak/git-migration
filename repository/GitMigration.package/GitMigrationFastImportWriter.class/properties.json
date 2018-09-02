@@ -11,7 +11,8 @@
 		"initialCommit",
 		"availableVersions",
 		"exportDirectory",
-		"fastWriter"
+		"fastWriter",
+		"lastAuthors"
 	],
 	"name" : "GitMigrationFastImportWriter",
 	"type" : "normal"

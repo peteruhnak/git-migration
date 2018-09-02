@@ -1,4 +1,12 @@
 accessing
 commitMessage
-	^ info message	" , ' (' , info versionNumber asString , ') ['
-		, ((info ancestors collect: #versionNumber) joinUsing: ', ') , ']'"
+	^ String
+		<< [ :stream | 
+			stream << info message withUnixLineEndings.
+			(self coauthors sorted: #name ascending)
+				ifNotEmpty: [ :co | 
+					stream lf.
+					stream lf.
+					co
+						do: [ :each | stream << 'Co-authored-by: ' << each name << ' <' << each email << '>' ]
+						separatedBy: [ stream lf ] ] ]

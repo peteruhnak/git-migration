@@ -14,3 +14,4 @@ testWriteProject
 	writer writeVersion: v1.
 	self deny: (stream contents lines includes: 'M 100644 inline repository/.project').
 	self assert: (stream contents lines includes: 'M 100644 inline .project').
+	self assert: (stream contents lines includes: '	''srcDirectory'' : ''repository''').

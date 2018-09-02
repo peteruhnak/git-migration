@@ -10,7 +10,8 @@
 		"author",
 		"committer",
 		"parents",
-		"branch"
+		"branch",
+		"coauthors"
 	],
 	"name" : "GitMigrationCommitInfo",
 	"type" : "normal"

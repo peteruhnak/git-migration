@@ -1,0 +1,3 @@
+accessing
+coauthors
+	^ coauthors \ {author}

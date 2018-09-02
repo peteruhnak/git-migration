@@ -1,7 +1,7 @@
 writing
 writeVersion: aVersion
 	| commitInfo memoryStore |
-	commitInfo := self commitInfoFor: aVersion info.
+	commitInfo := self commitInfoFor: aVersion.
 	fastWriter writeCommitPreambleFor: commitInfo.
 	(self commitMarkFor: commitInfo) = 1
 		ifTrue: [ fastWriter writeLine: 'from ' , initialCommit ].

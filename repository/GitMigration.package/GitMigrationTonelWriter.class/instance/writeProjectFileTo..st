@@ -6,4 +6,4 @@ writeProjectFileTo: aDirectory
 			(STONWriter on: stream)
 				prettyPrint: true;
 				newLine: OSPlatform current lineEnding;
-				nextPut: {'srcDirectory' -> 'repository'} asDictionary ]
+				nextPut: {'srcDirectory' -> aDirectory basename} asDictionary ]
