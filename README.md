@@ -72,10 +72,10 @@ See further for detailed explanation.
 ```smalltalk
 "Pharo"
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
-"optional -- migrate only some packages"
 "
 migration selectedPackageNames: #('Somewhere').
 "
+migration onEmptyMessage: [ :info | 'empty commit message' ].
 migration downloadAllVersions.
 migration populateCaches.
 migration allAuthors.
@@ -118,6 +118,9 @@ migration := GitMigration on: 'peteruhnak/breaking-mcz'.
 
 "optional -- migrate only some packages; if you don't specify anything, then all packages will be migrated"
 migration selectedPackageNames: #('Somewhere').
+
+"if a MCZ was missing a commit message, you can provide an alternative; info is an instance of the problematic MCVersionInfo"
+migration onEmptyMessage: [ :info | 'empty commit message' ].
 
 "Download all mcz files, this will take a while"
 migration downloadAllVersions.
