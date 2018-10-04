@@ -2,7 +2,7 @@ accessing
 commitMessage
 	^ String
 		<< [ :stream | 
-			stream << info message withUnixLineEndings.
+			stream << (info message copyWithout: Character null) withUnixLineEndings.
 			(self coauthors sorted: #name ascending)
 				ifNotEmpty: [ :co | 
 					stream lf.
