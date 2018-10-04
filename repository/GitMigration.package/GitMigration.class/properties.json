@@ -12,7 +12,8 @@
 		"completeAncestryCache",
 		"versionsWithPackageNames",
 		"versionsCache",
-		"allAuthors"
+		"allAuthors",
+		"selectedPackageNames"
 	],
 	"name" : "GitMigration",
 	"type" : "normal"
