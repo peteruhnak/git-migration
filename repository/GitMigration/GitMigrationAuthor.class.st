@@ -11,7 +11,7 @@ Class {
 		'name',
 		'email'
 	],
-	#category : 'GitMigration-FastImport'
+	#category : #'GitMigration-FastImport'
 }
 
 { #category : #'instance creation' }

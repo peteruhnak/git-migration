@@ -12,9 +12,10 @@ Class {
 		'availableVersions',
 		'exportDirectory',
 		'fastWriter',
-		'lastAuthors'
+		'lastAuthors',
+		'onEmptyMessage'
 	],
-	#category : 'GitMigration-FastImport'
+	#category : #'GitMigration-FastImport'
 }
 
 { #category : #accessing }
@@ -57,6 +58,7 @@ GitMigrationFastImportWriter >> commitInfoFor: aVersion [
 		mapping: authorMapping
 		committer: (authorMapping at: committerName)
 		coauthors: snapshotAuthors \ previousAuthors
+		onEmptyMessage: onEmptyMessage
 ]
 
 { #category : #accessing }
@@ -97,12 +99,18 @@ GitMigrationFastImportWriter >> initialize [
 	availableVersions := Dictionary new.
 	exportDirectory := '/'.
 	fastWriter := GitFastImportFileWriter new.
-	lastAuthors := Dictionary new
+	lastAuthors := Dictionary new.
+	onEmptyMessage := [ self error: 'No alternative message was provided' ]
 ]
 
 { #category : #initialization }
 GitMigrationFastImportWriter >> on: aStream [
 	fastWriter on: aStream.
+]
+
+{ #category : #accessing }
+GitMigrationFastImportWriter >> onEmptyMessage: aBlock [
+	onEmptyMessage := aBlock
 ]
 
 { #category : #writing }

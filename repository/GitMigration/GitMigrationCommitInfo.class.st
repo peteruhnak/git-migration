@@ -10,20 +10,20 @@ Class {
 		'committer',
 		'parents',
 		'branch',
-		'coauthors'
+		'coauthors',
+		'onEmptyMessage'
 	],
-	#category : 'GitMigration-FastImport'
+	#category : #'GitMigration-FastImport'
 }
 
 { #category : #'instance creation' }
-GitMigrationCommitInfo class >> info: aVersionInfo mapping: aMapping committer: aCommitter coauthors: aCoauthorsList [
+GitMigrationCommitInfo class >> info: aVersionInfo mapping: aMapping committer: aCommitter coauthors: aCoauthorsList onEmptyMessage: aBlock [
 	^ self new
 		info: aVersionInfo;
 		author: (aMapping at: aVersionInfo author);
-		coauthors:
-			(aCoauthorsList \ {aVersionInfo author}
-				collect: [ :each | aMapping at: each ]);
-		committer: aCommitter
+		coauthors: (aCoauthorsList \ {aVersionInfo author} collect: [ :each | aMapping at: each ]);
+		committer: aCommitter;
+		onEmptyMessage: aBlock
 ]
 
 { #category : #accessing }
@@ -77,7 +77,13 @@ GitMigrationCommitInfo >> coauthors: aCollection [
 GitMigrationCommitInfo >> commitMessage [
 	^ String
 		<< [ :stream | 
-			stream << (info message copyWithout: Character null) withUnixLineEndings.
+			| message |
+			message := (info message copyWithout: Character null) withUnixLineEndings.
+			message
+				ifEmpty:
+					[ message := ((onEmptyMessage cull: info) copyWithout: Character null) withUnixLineEndings ].
+			self assert: [ message isNotEmpty ] description: [ 'Commit message must not be empty' ].
+			stream << message.
 			(self coauthors sorted: #name ascending)
 				ifNotEmpty: [ :co | 
 					stream lf.
@@ -126,6 +132,11 @@ GitMigrationCommitInfo >> info: anObject [
 GitMigrationCommitInfo >> initialize [
 	super initialize.
 	branch := 'master'
+]
+
+{ #category : #accessing }
+GitMigrationCommitInfo >> onEmptyMessage: aBlock [
+	onEmptyMessage := aBlock
 ]
 
 { #category : #accessing }

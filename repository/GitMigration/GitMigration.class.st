@@ -14,9 +14,10 @@ Class {
 		'versionsWithPackageNames',
 		'versionsCache',
 		'allAuthors',
-		'selectedPackageNames'
+		'selectedPackageNames',
+		'onEmptyMessage'
 	],
-	#category : 'GitMigration'
+	#category : #GitMigration
 }
 
 { #category : #'instance creation' }
@@ -136,6 +137,7 @@ GitMigration >> createFastImportAt: anInitialCommitish usingWriter: aWriter [
 				collect: [ :info | self versions detect: [ :version | version info = info ] ] ]
 		displaying: 'Ordering history...'.
 	aWriter availableVersions: (versions collect: #info).
+	self preChecksOn: versions.
 	versions
 		do: [ :each | aWriter writeVersion: each veryDeepCopy ]
 		displayingProgress: [ :each | 'Exporting version ', each info name ]
@@ -166,6 +168,7 @@ GitMigration >> fastImportCodeToDirectory: aDirectoryName initialCommit: anIniti
 		writeStreamDo: [ :rawStream | 
 			writer := GitMigrationTonelWriter new on: rawStream.
 			writer exportDirectory: aDirectoryName.
+			writer onEmptyMessage: onEmptyMessage.
 			self createFastImportAt: anInitialCommitish usingWriter: writer ].
 	^ writer commitMarks
 ]
@@ -181,12 +184,18 @@ GitMigration >> findRepositoryNamed: aRepoName [
 GitMigration >> initialize [
 	super initialize.
 	completeAncestryCache := Dictionary new.
-	selectedPackageNames := #()
+	selectedPackageNames := #().
+	onEmptyMessage := [ :info | self error: 'Empty message was requested' ]
 ]
 
 { #category : #'topology sorting' }
 GitMigration >> isRoot: aKey in: pairs [
 	^ pairs noneSatisfy: [ :pair | pair value = aKey ]
+]
+
+{ #category : #accessing }
+GitMigration >> onEmptyMessage: aBlock [
+	onEmptyMessage := aBlock
 ]
 
 { #category : #accessing }
@@ -209,6 +218,21 @@ GitMigration >> populateCaches [
 		do: [ self versionsWithPackageNames.
 			self versions ]
 		displaying: 'Preparing data...'
+]
+
+{ #category : #import }
+GitMigration >> preCheckOn: aVersion [
+	"NOTE: do not touch snapshot without performing veryDeepCopy first"
+
+	aVersion info message
+		ifEmpty: [ self
+				assert: [ onEmptyMessage isNotNil and: [ (onEmptyMessage cull: aVersion info) isNotEmpty ] ]
+				description: [ 'You must provide onEmptyMessage.' ] ]
+]
+
+{ #category : #import }
+GitMigration >> preChecksOn: aVersionList [
+	aVersionList do: [ :each | self preCheckOn: each ]
 ]
 
 { #category : #accessing }

@@ -61,7 +61,7 @@ GitMigrationTest >> testCommitOrder [
 	commitOrder := migration commitOrder.
 	self
 		assert: (commitOrder collect: [ :each | (each name splitOn: '.') last asNumber ]) asArray
-		equals: #(1 2 4 3 1 8 4 15 5 6 9 5 6 10)
+		equals: #(1 2 4 3 1 8 4 15 5 6 9 5 6 10 1)
 ]
 
 { #category : #'tests - accessing' }
@@ -149,7 +149,7 @@ GitMigrationTest >> testVersionInfo [
 
 { #category : #'tests - accessing' }
 GitMigrationTest >> testVersionsByPackage [
-	self assert: migration versionsByPackage keys sorted equals: #(CoSomewhere Somewhere)
+	self assert: migration versionsByPackage keys sorted equals: #(CoSomewhere EverythingIsBurning Somewhere)
 ]
 
 { #category : #'tests - accessing' }

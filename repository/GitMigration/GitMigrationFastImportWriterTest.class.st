@@ -15,11 +15,6 @@ GitMigrationFastImportWriterTest class >> isAbstract [
 	^ self = GitMigrationFastImportWriterTest
 ]
 
-{ #category : #'instance creation' }
-GitMigrationFastImportWriterTest >> commitInfoFor: aVersionInfo [
-	^ GitMigrationCommitInfo info: aVersionInfo mapping: authorMapping committer: committer
-]
-
 { #category : #running }
 GitMigrationFastImportWriterTest >> ensureAllCached [
 	(MCCacheRepository uniqueInstance directory children
