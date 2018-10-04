@@ -1,3 +1,0 @@
-colors
-rootColor
-	^ Color yellow

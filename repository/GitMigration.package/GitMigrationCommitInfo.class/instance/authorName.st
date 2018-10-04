@@ -1,3 +1,0 @@
-accessing
-authorName
-	^ author name

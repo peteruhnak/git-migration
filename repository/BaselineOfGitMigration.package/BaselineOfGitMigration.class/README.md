@@ -1,1 +1,0 @@
-Baseline for https://github.com/peteruhnak/git-migration

@@ -1,3 +1,0 @@
-retrieving
-versionInfoFromFileNamed: aFileName
-	^ MCCacheRepository uniqueInstance versionInfoFromFileNamed: aFileName

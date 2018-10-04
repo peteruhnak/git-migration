@@ -1,3 +1,0 @@
-accessing
-commitMarks
-	^ fastWriter commitMarks

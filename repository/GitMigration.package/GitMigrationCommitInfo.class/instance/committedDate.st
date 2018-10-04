@@ -1,3 +1,0 @@
-accessing
-committedDate
-	^ DateAndTime now

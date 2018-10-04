@@ -1,3 +1,0 @@
-accessing
-committerName
-	^ committer name

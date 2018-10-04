@@ -1,3 +1,0 @@
-accessing
-authorEmail
-	^ author email
