@@ -14,8 +14,10 @@ completeAncestryOfPackageNamed: aPackageName
 				do: [ :version | 
 					parents := Array with: version.
 					[ parents isNotEmpty ]
-						whileTrue: [ | ancestors |
-							ancestors := parents flatCollect: [ :p | getAncestors value: p ].
+						whileTrue: [ | allAncestors ancestors |
+							allAncestors := parents flatCollect: [ :p | getAncestors value: p ].
+							"The history can get trimmed, with only ID preserved and nothing else"
+							ancestors := allAncestors reject: [ :e | e name = '' ].
 							allVersions addAll: parents.
 							parents := ancestors ] ].
 			allVersions ]

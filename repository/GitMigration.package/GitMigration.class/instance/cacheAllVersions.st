@@ -1,9 +1,10 @@
 actions
 cacheAllVersions
-	| goSource versionNames |
+	| goSource allPackageNames packageNames|
 	goSource := Gofer new repository: repository.
-	versionNames := repository allVersionNames.
+	allPackageNames := (repository allVersionNames collect: [ :each | each copyUpToLast: $- ]) asSet.
+	packageNames := selectedPackageNames ifEmpty: [ allPackageNames ].
 	(goSource allResolved
-		select: [ :resolved | versionNames anySatisfy: [ :each | resolved name = each ] ])
+		select: [ :resolved | packageNames includes: resolved packageName ])
 		do: [ :each | goSource package: each packageName ].
 	goSource fetch
