@@ -1,5 +1,7 @@
 tests - accessing
 testCompleteAncestryTrimmed
+	"https://github.com/peteruhnak/git-migration/issues/13"
+
 	| result brokenVersion brokenAncestor |
 	migration populateCaches.
 	brokenVersion := migration versions
