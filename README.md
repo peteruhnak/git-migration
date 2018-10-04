@@ -65,13 +65,17 @@ Metacello new
 
 This tool generates a file for [git-fast-import](https://git-scm.com/docs/git-fast-import).
 
-### Example
+### Quick Example
 
 See further for detailed explanation.
 
 ```smalltalk
 "Pharo"
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
+"optional -- migrate only some packages"
+"
+migration selectedPackageNames: #('Somewhere').
+"
 migration downloadAllVersions.
 migration populateCaches.
 migration allAuthors.
@@ -111,6 +115,9 @@ $ git log --oneline -n 1
 ```smalltalk
 "Specify the name of the source repository; I am sourcing from peteruhnak/breaking-mcz project on SmalltalkHub"
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
+
+"optional -- migrate only some packages; if you don't specify anything, then all packages will be migrated"
+migration selectedPackageNames: #('Somewhere').
 
 "Download all mcz files, this will take a while"
 migration downloadAllVersions.
