@@ -40,6 +40,15 @@ GitMigrationTest >> setUp [
 ]
 
 { #category : #'tests - accessing' }
+GitMigrationTest >> testAllAuthors [
+	| oldName |
+	oldName := Author fullName.
+	[ Author fullName: 'LocalUser'.
+	self assert: (migration allAuthors includes: 'LocalUser') ]
+		ensure: [ Author fullName: oldName ]
+]
+
+{ #category : #'tests - accessing' }
 GitMigrationTest >> testAuthorsOk [
 	self
 		shouldnt: [ migration authors: {'PeterUhnak' -> #('Peter Uhnak' '<wherever@wherever.com>')} ]

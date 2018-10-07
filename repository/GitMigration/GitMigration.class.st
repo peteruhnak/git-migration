@@ -32,6 +32,7 @@ GitMigration >> allAuthors [
 	allAuthors
 		ifNil: [ | authorsSet |
 			authorsSet := Set new.
+			authorsSet add: Author fullName.
 			self versions
 				do: [ :each | authorsSet addAll: (self authorsInSnapshot: each veryDeepCopy snapshot) ]
 				displayingProgress: [ :each | 'Loading authors... ' , each info name ].
@@ -134,22 +135,21 @@ GitMigration >> completeAncestryOfPackageNamed: aPackageName [
 GitMigration >> createFastImportAt: anInitialCommitish usingWriter: aWriter [
 	| totalOrdering versions |
 	aWriter initialCommit: anInitialCommitish.
+	(authors isNil or: [ authors isEmpty ])
+		ifTrue: [ self error: 'Please provide authors.' ].
 	authors
-		keysAndValuesDo: [ :key :duet | 
-			aWriter authorMapping
-				shortName: key
-				name: duet first
-				email: ((duet second withoutPrefix: '<') withoutSuffix: '>') ].
+		keysAndValuesDo:
+			[ :key :duet | aWriter authorMapping shortName: key name: duet first email: ((duet second withoutPrefix: '<') withoutSuffix: '>') ].
 	self
 		do: [ totalOrdering := self commitOrder.
-			versions := totalOrdering
-				collect: [ :info | self versions detect: [ :version | version info = info ] ] ]
+			versions := totalOrdering collect: [ :info | self versions detect: [ :version | version info = info ] ] ]
 		displaying: 'Ordering history...'.
 	aWriter availableVersions: (versions collect: #info).
 	self preChecksOn: versions.
 	versions
 		do: [ :each | aWriter writeVersion: each veryDeepCopy ]
-		displayingProgress: [ :each | 'Exporting version ', each info name ]
+		displayingProgress: [ :each | 'Exporting version ' , each info name ]
+		every: 0
 ]
 
 { #category : #ui }
