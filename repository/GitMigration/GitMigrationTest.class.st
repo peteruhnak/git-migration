@@ -29,6 +29,33 @@ GitMigrationTest >> ensureTestRepoLoaded [
 	MCRepositoryGroup default addRepository: repo
 ]
 
+{ #category : #'tests - accessing' }
+GitMigrationTest >> mockVersionsForAllAuthors [
+	migration
+		writeSlotNamed: #versionsCache
+		value:
+			{MCVersion
+				package: (MCPackage named: 'XYZ')
+				info:
+					(MCVersionInfo
+						name: 'Package-CommitAuthor.1'
+						id: UUID new
+						message: 'commit'
+						date: Date today
+						time: Time now
+						author: 'CommitAuthor'
+						ancestors: #())
+				snapshot:
+					(MCSnapshot
+						fromDefinitions:
+							{MCMethodDefinition
+								className: 'Something'
+								selector: #selector
+								category: #''
+								timeStamp: 'MethodAuthor 1/31/2001 01:23'
+								source: ''})} asOrderedCollection
+]
+
 { #category : #running }
 GitMigrationTest >> setUp [
 	super setUp.
@@ -46,6 +73,27 @@ GitMigrationTest >> testAllAuthors [
 	[ Author fullName: 'LocalUser'.
 	self assert: (migration allAuthors includes: 'LocalUser') ]
 		ensure: [ Author fullName: oldName ]
+]
+
+{ #category : #'tests - accessing' }
+GitMigrationTest >> testAllAuthorsContainsLocal [
+	| oldName |
+	oldName := Author fullName.
+	[ Author fullName: 'LocalUser'.
+	self assert: (migration allAuthors includes: 'LocalUser') ]
+		ensure: [ Author fullName: oldName ]
+]
+
+{ #category : #'tests - accessing' }
+GitMigrationTest >> testAllAuthorsReadsCommitAuthor [
+	self mockVersionsForAllAuthors.
+	self assert: (migration allAuthors includes: 'CommitAuthor')
+]
+
+{ #category : #'tests - accessing' }
+GitMigrationTest >> testAllAuthorsReadsSnapshot [
+	self mockVersionsForAllAuthors.
+	self assert: (migration allAuthors includes: 'MethodAuthor')
 ]
 
 { #category : #'tests - accessing' }

@@ -35,7 +35,9 @@ GitMigration >> allAuthors [
 			authorsSet := Set new.
 			authorsSet add: Author fullName.
 			self versions
-				do: [ :each | authorsSet addAll: (self authorsInSnapshot: each veryDeepCopy snapshot) ]
+				do: [ :each | 
+					authorsSet add: each info author.
+					authorsSet addAll: (self authorsInSnapshot: each veryDeepCopy snapshot) ]
 				displayingProgress: [ :each | 'Loading authors... ' , each info name ].
 			allAuthors := authorsSet asArray sorted ].
 	^ allAuthors
