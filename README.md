@@ -21,9 +21,10 @@ Pharo 6 is **not** supported.
 
 Table Of Contents
 
-* [Possible Issues](#possible-issues)
 * [Installation](#installation)
-* [Usage](#usage)
+* [Possible Issues](#possible-issues)
+* [Usage - Quick Example](#usage---quick-example)
+* [Usage - Detailed Example](#usage---detailed-example)
 * [Extras](#extras)
 * [Visualizations](#visualizations)
 	* see pretty pictures of your MCZ history before you decide to migrate
@@ -35,8 +36,10 @@ Table Of Contents
 
 This tool has been used in countless successful migrations, however it is possible that you will run into a very special edge case™. Feel free to open an issue, contact me directly, on Pharo's mailing list or Discord.
 
-* **corrupted MCZs** sometimes the MCZ that is on SmalltalkHub is corrupted. Although the MCZ contains a "backup" in form of a fileout, Pharo cannot actually correctly read this most of the time. The recommended solution is to just add the MCZ name to `#ignoredFileNames:`.
+* **Corrupted MCZs:** Sometimes the MCZ that is on SmalltalkHub is corrupted. Although the MCZ contains a "backup" in form of a fileout, Pharo cannot actually correctly read this most of the time. The recommended solution is to just add the MCZ name to `#ignoredFileNames:`.
 	* ![corrupted version](figures/corrupted-version.png)
+* **Private emails on GitHub:** If you use private email on GitHub, you will need to provide your GitHub-generated alias, otherwise the push will be rejected. This applies only to the email of the person pushing to GitHub, not all committers.
+
 * performance
 	* downloading MCZs -- GitMigration is downloading *all* of your project MCZs from SmalltalkHub. This can take a while depending on the quality of your connection and how SmalltalkHub feels on any particular day
 	* converting (in Pharo) -- each MCZ is read from disk, parsed, and written back to disk in a different format; this can take a while for large projects
@@ -57,9 +60,23 @@ This tool has been used in countless successful migrations, however it is possib
 
 This tool generates a file for [git-fast-import](https://git-scm.com/docs/git-fast-import).
 
-See further down for a detailed line-by-line explanation.
 
-### 1. Run Migration in Pharo
+### 1. Add Source Repository
+
+Add your source repository (SmalltalkHub) to Pharo, e.g. via Monticello Browser
+
+### 2. Find The Initial Commit SHA
+
+The migration will need to know from which commit it should start. This will be typically the SHA of the current commit of the master branch; you don't need the full 40-char SHA, an unambiguous prefix is enough.
+
+The get the current commit, you can use the following:
+
+```bash
+$ git log --oneline -n 1
+```
+### 3. Run Migration in Pharo
+
+See further down for a detailed line-by-line explanation.
 
 ```smalltalk
 "Pharo"
@@ -79,26 +96,14 @@ migration
 	to: 'D:/tmp/breaking-mcz2/import.txt'
 ```
 
+### 4. Import Code into Git
+
 ```bash
 # Terminal
 cd D:/tmp/breaking-mcz2
 git fast-import < import.txt
 git reset --hard master
 git gc
-```
-
-### 2. Add Source Repository
-
-Add your source repository (SmalltalkHub) to Pharo, e.g. via Monticello Browser
-
-### 3. Find The Initial Commit SHA
-
-The migration will need to know from which commit it should start. This will be typically the SHA of the current commit of the master branch; you don't need the full 40-char SHA, an unambiguous prefix is enough.
-
-The get the current commit, you can do the following
-
-```bash
-$ git log --oneline -n 1
 ```
 
 ## Usage - Detailed Example
