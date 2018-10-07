@@ -6,8 +6,17 @@ Class {
 
 { #category : #'writing - memory' }
 GitMigrationTonelWriter >> copyPackageIn: aVersion toStore: memoryStore [
+	self ensureContainsOrganization: aVersion.
 	TonelWriter fileOut: aVersion on: memoryStore.
 	self writePropertiesFileTo: memoryStore
+]
+
+{ #category : #writing }
+GitMigrationTonelWriter >> ensureContainsOrganization: aVersion [
+	aVersion snapshot definitions
+		detect: #isOrganizationDefinition
+		ifFound: [ :each | each ]
+		ifNone: [ aVersion snapshot definitions add: (MCOrganizationDefinition categories: {aVersion package name}) ]
 ]
 
 { #category : #writing }
