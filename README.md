@@ -17,8 +17,7 @@ Metacello new
 	load
 ```
 
-For Pharo 6, see further down.
-
+Pharo 6 is **not** supported.
 
 Table Of Contents
 
@@ -34,46 +33,40 @@ Table Of Contents
 
 ## Possible Issues
 
-This tool has been used in countless successful migrations, however it is possible that you will run into a very special™ edge case. Feel free to open an issue or contact me directly on Pharo's mailing list or Discord.
+This tool has been used in countless successful migrations, however it is possible that you will run into a very special edge case™. Feel free to open an issue, contact me directly, on Pharo's mailing list or Discord.
 
-* performance - Git's fast-import is used to move the data. On Pharo side (generating import file) it will take couple minutes for large repos (caching every single version, unzipping, transforming, ...). On Git side it will take about a second. (PolyMath with 800 commits accross 70 packages took ~3 minutes generating 90MB import file)
-* relying on dependencies specified in MC Versions (=NOT ConfigurationOf/BaselineOf) -- not supported
+* **corrupted MCZs** sometimes the MCZ that is on SmalltalkHub is corrupted. Although the MCZ contains a "backup" in form of a fileout, Pharo cannot actually correctly read this most of the time. The recommended solution is to just add the MCZ name to `#ignoredFileNames:`.
+	* ![corrupted version](figures/corrupted-version.png)
+* performance
+	* downloading MCZs -- GitMigration is downloading *all* of your project MCZs from SmalltalkHub. This can take a while depending on the quality of your connection and how SmalltalkHub feels on any particular day
+	* converting (in Pharo) -- each MCZ is read from disk, parsed, and written back to disk in a different format; this can take a while for large projects
+		* e.g. PolyMath with 800 commits across 70 packages took ~3 minutes on a stock HDD
+	* importing (Git) -- this should be under a minute; in most cases it will probably take couple of seconds
+
+* MCVersion dependencies are not supported (but I don't think they were used outside of Slices)
+	* if you don't know what this is, you probably don't need to care
 * preserving proper merge history (see  also [#4](https://github.com/peteruhnak/git-migration/issues/4))
 	* after many hours burned on this I've concluded that there is no way to do a fully automated 1:1 migration; note that your data/commits are not lost, only the merge history will not be as rich.
 
 ## Prerequisites
 
 * git installed in the system and available in `PATH`
-* **Pharo 6+**
+* **Pharo 7**
 
-## Installation - Pharo 6
-
-**Pharo 6**
-
-**NOTE** Please note that new features are _not_ backported to Pharo 6 branch. GitMigration doesn't actually load your target project into the image, so there should be no practical reason to migrate in P6 instead of P7.
-
-**NOTE 2** Pharo 6 version will output FileTree format; for Tonel please use Pharo 7.
-
-```smalltalk
-Metacello new
-	baseline: 'GitMigration';
-	repository: 'github://peteruhnak/git-migration:pharo6/repository';
-	load
-```
-
-## Usage
+## Usage - Quick Example
 
 This tool generates a file for [git-fast-import](https://git-scm.com/docs/git-fast-import).
 
-### Quick Example
+See further down for a detailed line-by-line explanation.
 
-See further for detailed explanation.
+### 1. Run Migration in Pharo
 
 ```smalltalk
 "Pharo"
 migration := GitMigration on: 'peteruhnak/breaking-mcz'.
 "
 migration selectedPackageNames: #('Somewhere').
+migration ignoredFileNames: #('Somewhere-PeterUhnak.2').
 "
 migration onEmptyMessage: [ :info | 'empty commit message' ].
 migration downloadAllVersions.
@@ -94,11 +87,11 @@ git reset --hard master
 git gc
 ```
 
-### 1. Add Source Repository
+### 2. Add Source Repository
 
 Add your source repository (SmalltalkHub) to Pharo, e.g. via Monticello Browser
 
-### 2. Find The Initial Commit SHA
+### 3. Find The Initial Commit SHA
 
 The migration will need to know from which commit it should start. This will be typically the SHA of the current commit of the master branch; you don't need the full 40-char SHA, an unambiguous prefix is enough.
 
@@ -108,7 +101,7 @@ The get the current commit, you can do the following
 $ git log --oneline -n 1
 ```
 
-### 3. Generating Import File
+## Usage - Detailed Example
 
 *A longer description of the example above.*
 
@@ -118,6 +111,9 @@ migration := GitMigration on: 'peteruhnak/breaking-mcz'.
 
 "optional -- migrate only some packages; if you don't specify anything, then all packages will be migrated"
 migration selectedPackageNames: #('Somewhere').
+
+"optional -- in case you have corrupted MCZs, you can ignore them and rerun the migration"
+migration ignoredFileNames: #('Somewhere-PeterUhnak.2').
 
 "if a MCZ was missing a commit message, you can provide an alternative; info is an instance of the problematic MCVersionInfo"
 migration onEmptyMessage: [ :info | 'empty commit message' ].
@@ -149,7 +145,7 @@ migration
 	to: 'D:/tmp/breaking-mcz2/import.txt'
 ```
 
-### 4. Running The Import
+### Running The Import
 
 Get a terminal, go to the target git repository, and run the migration.
 
