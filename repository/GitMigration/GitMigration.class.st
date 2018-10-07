@@ -15,7 +15,8 @@ Class {
 		'versionsCache',
 		'allAuthors',
 		'selectedPackageNames',
-		'onEmptyMessage'
+		'onEmptyMessage',
+		'ignoredFileNames'
 	],
 	#category : #GitMigration
 }
@@ -133,23 +134,14 @@ GitMigration >> completeAncestryOfPackageNamed: aPackageName [
 
 { #category : #import }
 GitMigration >> createFastImportAt: anInitialCommitish usingWriter: aWriter [
-	| totalOrdering versions |
+	| versions |
 	aWriter initialCommit: anInitialCommitish.
-	(authors isNil or: [ authors isEmpty ])
-		ifTrue: [ self error: 'Please provide authors.' ].
-	authors
-		keysAndValuesDo:
-			[ :key :duet | aWriter authorMapping shortName: key name: duet first email: ((duet second withoutPrefix: '<') withoutSuffix: '>') ].
-	self
-		do: [ totalOrdering := self commitOrder.
-			versions := totalOrdering collect: [ :info | self versions detect: [ :version | version info = info ] ] ]
-		displaying: 'Ordering history...'.
-	aWriter availableVersions: (versions collect: #info).
+	self useAuthorsOn: aWriter.
+	self do: [ versions := self versionsToMigrate ] displaying: 'Ordering history...'.
 	self preChecksOn: versions.
 	versions
 		do: [ :each | aWriter writeVersion: each veryDeepCopy ]
 		displayingProgress: [ :each | 'Exporting version ' , each info name ]
-		every: 0
 ]
 
 { #category : #ui }
@@ -189,11 +181,17 @@ GitMigration >> findRepositoryNamed: aRepoName [
 		detect: [ :each | (each description includesSubstring: aRepoName) or: (each description includesSubstring: (aRepoName copyReplaceAll: '/' with: '\')) ]
 ]
 
+{ #category : #accessing }
+GitMigration >> ignoredFileNames: aCollection [
+	ignoredFileNames := aCollection collect: [ :each | each withoutSuffix: '.mcz' ]
+]
+
 { #category : #initialization }
 GitMigration >> initialize [
 	super initialize.
 	completeAncestryCache := Dictionary new.
 	selectedPackageNames := #().
+	ignoredFileNames := #().
 	onEmptyMessage := [ :info | self error: 'Empty message was requested' ]
 ]
 
@@ -288,6 +286,18 @@ GitMigration >> topologicallySortPairs: anArray [
 	^ out
 ]
 
+{ #category : #import }
+GitMigration >> useAuthorsOn: aWriter [
+	(authors isNil or: [ authors isEmpty ])
+		ifTrue: [ self error: 'Please provide authors.' ].
+	authors
+		keysAndValuesDo: [ :key :duet | 
+			aWriter authorMapping
+				shortName: key
+				name: duet first
+				email: ((duet second withoutPrefix: '<') withoutSuffix: '>') ]
+]
+
 { #category : #retrieving }
 GitMigration >> versionFromFileNamed: aFileName [
 	^ MCCacheRepository uniqueInstance versionReaderForFileNamed: aFileName do: #version
@@ -325,6 +335,16 @@ GitMigration >> versionsByPackage [
 { #category : #accessing }
 GitMigration >> versionsInfo [
 	^ self versions collect: #info
+]
+
+{ #category : #import }
+GitMigration >> versionsToMigrate [
+	| totalOrdering versions |
+	totalOrdering := self commitOrder.
+	versions := totalOrdering
+		collect: [ :info | self versions detect: [ :version | version info = info ] ].
+	versions removeAllSuchThat: [ :each | ignoredFileNames includes: each info name ].
+	^ versions
 ]
 
 { #category : #accessing }
