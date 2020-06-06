@@ -1,3 +1,10 @@
+# **REPO MIGRATED TO https://github.com/pharo-contributions/git-migration**
+
+I no longer maintain this project.
+
+---
+
+
 # MCZ -> Git Migration
 [![Build Status](https://travis-ci.org/peteruhnak/git-migration.svg?branch=master)](https://travis-ci.org/peteruhnak/git-migration) [![Coverage Status](https://coveralls.io/repos/github/peteruhnak/git-migration/badge.svg?branch=master)](https://coveralls.io/github/peteruhnak/git-migration?branch=master)
 
@@ -5,10 +12,6 @@
 Utility to migrate code from SmalltalkHub (or any MCZ-based repo) to Git.
 
 The output is in **Tonel** format.
-
-# **REPO MIGRATED TO https://github.com/pharo-contributions/git-migration**
-
----
 
 ## Installation
 
